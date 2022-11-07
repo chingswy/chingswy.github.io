@@ -199,7 +199,7 @@
           {% if entry.tags -%}
             {% assign tags = entry.tags | split: ", " %}
             {%- for tag in tags -%}
-            <a href="{{ tag | slugify | prepend: '/paper/tag/' | prepend: site.baseurl}}">
+            <a href="{{ tag | slugify | prepend: '/tags/' | prepend: site.baseurl}}">
               <i class="fas fa-hashtag fa-sm"></i> {{ tag }}</a> &nbsp;
             {%- endfor -%}
           {%- endif -%}

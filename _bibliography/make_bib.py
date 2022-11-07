@@ -38,7 +38,7 @@ for key, value in datas.items():
     if 'keywords' in value.keys():
         keywords = value['keywords'].split(', ')
         for i, keyword in enumerate(keywords):
-            keywords[i] = keyword.replace(' ', '_')
+            keywords[i] = keyword.replace(' ', '-')
         for tag in keywords:
             if not tag in tags_cnt.keys():
                 tags_cnt[tag] = 0

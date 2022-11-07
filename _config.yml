@@ -198,6 +198,12 @@ defaults:
     values:
       sitemap: false
 
+# reading pages
+reading:
+  tags: ['monocular', 'pose-estimation', 'neural-rendering', 'human', 'human-representation', 'multi-person', 'tracking', 'multi-view', 'clothed', 'SMPL', 'reconstruction', 'nonrigid', 'review', 'human-part', 'feet', 'implicit-model', 'human-synthesis', 'view-synthesis', 'human-modeling', 'human-performance-capture', 'dataset', 'optical-flow', 'text2pose', 'pose-generation', 'motion', 'implicit', 'human-shape', 'performance-capture', 'self-supervised', 'motion-prediction', 'contact', 'videos', 'transformer', 'mocap', 'uncalibrated']
+  permalinks: '/reading/:tag'
+  layouts: "default"
+
 # -----------------------------------------------------------------------------
 # Jekyll Minifier
 # -----------------------------------------------------------------------------
