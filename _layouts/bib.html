@@ -195,5 +195,14 @@
             {% highlight bibtex %}{{ entry.bibtex | hideCustomBibtex }}{% endhighlight %}
           </div>
           {%- endif %}
+
+          {% if entry.tags -%}
+            {% assign tags = entry.tags | split: ", " %}
+            {%- for tag in tags -%}
+            <a href="{{ tag | slugify | prepend: '/paper/tag/' | prepend: site.baseurl}}">
+              <i class="fas fa-hashtag fa-sm"></i> {{ tag }}</a> &nbsp;
+            {%- endfor -%}
+          {%- endif -%}
+
         </div>
       </div>
