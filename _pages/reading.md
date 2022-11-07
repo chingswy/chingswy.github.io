@@ -15,7 +15,7 @@ years: [2022, 2021, 2020]
 <script>
    function reloadPage_{{tag}}() {
       var inputs = document.getElementsByClassName("publications");
-      inputs[0].innerHTML = `{% bibliography -f output -q @*[tags~={{tag}}]* %}`;
+      inputs[0].innerHTML = `{% bibliography -f output -q @*[tags~={{tag}}]* %}`.replace(/[\r\n]/g, '');
     }
 </script>
 {% endfor -%}
