@@ -11,19 +11,11 @@ horizontal: false
 years: [2022, 2021, 2020]
 ---
 
-<script>
-function heredoc(fn) {
-  return fn.toString().split('\n').slice(1,-1).join('\n') + '\n'
-}
-</script>
-
 {% for tag in page.tags -%}
 <script>
    function reloadPage_{{tag}}() {
       var inputs = document.getElementsByClassName("publications");
-      inputs[0].innerHTML = heredoc(function(){/*
-      {% bibliography -f output -q @*[tags~={{tag}}]* %}
-      */});
+      inputs[0].innerHTML = `{% bibliography -f output -q @*[tags~={{tag}}]* %}`.replace(/[\r\n]/g, '');
     }
 </script>
 {% endfor -%}
