@@ -16,6 +16,8 @@ outname = 'output.bib'
 
 outputs = ['---', '---']
 
+tags_cnt = {}
+
 for key, value in datas.items():
     data = {}
     assert 'url' in value.keys(), key
@@ -35,6 +37,12 @@ for key, value in datas.items():
         html = None
     if 'keywords' in value.keys():
         keywords = value['keywords'].split(', ')
+        for i, keyword in enumerate(keywords):
+            keywords[i] = keyword.replace(' ', '_')
+        for tag in keywords:
+            if not tag in tags_cnt.keys():
+                tags_cnt[tag] = 0
+            tags_cnt[tag] += 1
         data['tags'] = ', '.join(keywords)
     res = '@inproceedings{{{},'.format(key)
     outputs.append(res)
@@ -50,3 +58,7 @@ for key, value in datas.items():
     outputs.append('')
 
 print('\r\n'.join(outputs), file=open(outname, 'w'))
+
+tags = list(tags_cnt.keys())
+tags.sort(key=lambda x:-tags_cnt[x])
+print(tags)

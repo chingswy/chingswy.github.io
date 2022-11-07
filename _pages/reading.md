@@ -6,9 +6,26 @@ description:
 nav: true
 nav_order: 2
 display_categories: [work, fun]
+tags: ['monocular', 'pose_estimation', 'neural_rendering', 'human', 'human_representation']
 horizontal: false
 years: [2022, 2021, 2020]
 ---
+
+{% for tag in page.tags -%}
+<script>
+   function reloadPage_{{tag}}() {
+      var inputs = document.getElementsByClassName("publications");
+      inputs[0].innerHTML = `{% bibliography -f output -q @*[tags~={{tag}}]* %}`;
+    }
+</script>
+{% endfor -%}
+
+
+###### Tags:
+
+{% for tag in page.tags -%}
+<a onclick="reloadPage_{{tag}}()"> <i class="fas fa-hashtag fa-sm"></i> {{ tag }}</a> &nbsp;
+{% endfor -%}
 
 <div class="publications">
 <!-- pages/projects.md -->
