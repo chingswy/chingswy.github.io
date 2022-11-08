@@ -5,12 +5,13 @@ permalink: /reading/
 description: 
 nav: true
 nav_order: 2
+years: [2022, 2021, 2020, 2019, 2018, 2017]
 ---
 
 
 <div class="publications">
 <!-- pages/projects.md -->
-{%- for y in site.data.reading.years %}
+{%- for y in page.years %}
 <h2 class="year">{{y}}</h2>
   {% bibliography -f output -q @*[year={{y}}]* %}
 {% endfor %}
