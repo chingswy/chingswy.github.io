@@ -1,6 +1,5 @@
 pergamo:
   title: "PERGAMO: Personalized 3D Garments from Monocular Video"
-  url: https://arxiv.org/abs/2208.11251
   keywords: human, monocular, garments
   figure: 2
   code: https://github.com/AndresCasado/pergamo

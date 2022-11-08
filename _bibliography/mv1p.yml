@@ -18,7 +18,7 @@ lrtri:
   url: https://arxiv.org/abs/2203.15865
   figure: 1
   Qing: 使用多视角三角化来自监督
-  keywords: human, mv, 1p, 3dpose, e2d, self-supervised
+  keywords: human, mv, 1p, 3dpose, e2e, self-supervised
 
 temporal3d:
   title: Learning Temporal 3D Human Pose Estimation with Pseudo-Label
