@@ -8,57 +8,133 @@
 '''
 import yaml
 import arxiv
+from os.path import join
+import os
+dirname = os.path.abspath(os.path.dirname(__file__))
 
-with open('arxiv2210.yml', 'r') as f:
-    datas = yaml.safe_load(f)
+mywarn = print
+log = print
+def run_cmd(cmd):
+    os.system(cmd)
 
-outname = 'output.bib'
+def check_exists(path, min_l=1):
+    flag1 = os.path.isfile(path) and os.path.exists(path)
+    flag2 = os.path.isdir(path) and len(os.listdir(path)) >= min_l
+    if not flag1 and not flag2:
+        mywarn('[Check] {} not exists'.format(path))
+    return flag1 or flag2
 
-outputs = ['---', '---']
+def mkdir(path, verbose=True):
+    if not os.path.exists(path):
+        log('mkdir {}'.format(path))
+        os.makedirs(path, exist_ok=True)
 
-tags_cnt = {}
-
-for key, value in datas.items():
-    data = {}
-    assert 'url' in value.keys(), key
+def parsing_arxiv_paper(value, record):
     url = value['url']
-    if 'arxiv' in url:
-        html = url
-        arxivid = url.split('/')[-1].replace('.pdf', '')
-        year = '20' + arxivid[:2]
-        print('>> searching paper {} in arxiv'.format(key))
-        search = arxiv.Search(id_list=[arxivid])
-        results = list(search.results())
-        assert len(results) == 1, url
-        result = results[0]
-        data['title'] = result.title
-        data['author'] = ' and '.join([d.name for d in result.authors])
-    else:
-        html = None
+    record['html'] = url
+    arxivid = url.split('/')[-1].replace('.pdf', '')
+    year = '20' + arxivid[:2]
+    record['year'] = year
+    print('>> searching paper {} in arxiv'.format(url))
+    search = arxiv.Search(id_list=[arxivid])
+    results = list(search.results())
+    assert len(results) == 1, url
+    result = results[0]
+    record['title'] = result.title
+    record['author'] = [d.name for d in result.authors]
+    record['abstract'] = result.summary.replace('\n', '')
+    # 爬取figure
+    if 'figure' in value.keys():
+        tarname = join(dirname, '_arxiv', f'{arxivid}.tar.gz')
+        mkdir(os.path.dirname(tarname))
+        if not check_exists(tarname):
+            cmd = 'curl https://arxiv.org/e-print/{} --output {}'.format(arxivid, tarname)
+            run_cmd(cmd)
+        sourcename = join(dirname, '_arxiv', arxivid)
+        if not check_exists(sourcename):
+            mkdir(sourcename, verbose=False)
+            cmd = f'tar -xzf {tarname} -C {sourcename}'
+            run_cmd(cmd)
+    return record
+
+def parsing_my_info(value, record):
+    if 'title' in value.keys() and 'title' not in record.keys():
+        record['title'] = value['title']
     if 'keywords' in value.keys():
         keywords = value['keywords'].split(', ')
         for i, keyword in enumerate(keywords):
             keywords[i] = keyword.replace(' ', '-')
-        for tag in keywords:
-            if not tag in tags_cnt.keys():
-                tags_cnt[tag] = 0
-            tags_cnt[tag] += 1
-        data['tags'] = ', '.join(keywords)
-    res = '@inproceedings{{{},'.format(key)
-    outputs.append(res)
-    outputs.append('  title={{{}}},'.format(data['title']))
-    outputs.append('  author={{{}}},'.format(data['author']))
-    outputs.append('  year={{{}}},'.format(year))
-    if 'tags' in data.keys():
-        outputs.append('  tags={{{}}},'.format(data['tags']))
-    if html is not None:
-        outputs.append('  html={{{}}},'.format(html))
-    outputs.append('  bibtex_show={{true}},'.format())
-    outputs.append('}')
-    outputs.append('')
+        record['tags'] = keywords
+    if 'Qing' in value.keys():
+        record['Qing'] = value['Qing']
+    if 'code' in value.keys():
+        record['code'] = value['code']
+    assert 'title' in record.keys(), value
+    return record
 
-print('\r\n'.join(outputs), file=open(outname, 'w'))
+def reading_yml(filename, category):
+    if os.path.exists(global_cache_name):
+        with open(global_cache_name, 'r') as f:
+            global_cache = yaml.safe_load(f)
+    else:
+        global_cache = {}
+    with open(filename, 'r') as f:
+        datas = yaml.safe_load(f)
+    records = []
+    for key, value in datas.items():
+        if key in global_cache.keys():
+            record = global_cache[key]
+            records.append(record)
+            continue
+        record = {
+            'key': key
+        }
+        if 'url' in value.keys() and 'arxiv' in value['url']:
+            record = parsing_arxiv_paper(value, record)
+        record = parsing_my_info(value, record)
+        global_cache[key] = record
+        records.append(record)
+    with open(global_cache_name, 'w') as f:
+        yaml.safe_dump(global_cache, f, allow_unicode=True)
+    return records
 
-tags = list(tags_cnt.keys())
-tags.sort(key=lambda x:-tags_cnt[x])
-print(tags)
+def write_to_bib(records, outname):
+    outputs = ['---', '---']
+    years, tags = set(), set()
+    for record in records:
+        res = '@inproceedings{{{},'.format(record['key'])
+        outputs.append(res)
+        outputs.append('  title={{{}}},'.format(record['title']))
+        if 'author' in record.keys():
+            outputs.append('  author={{{}}},'.format(' and '.join(record['author'])))
+        if 'year' in record.keys():
+            outputs.append('  year={{{}}},'.format(record['year']))
+            years.add(record['year'])
+        if 'tags' in record.keys():
+            outputs.append('  tags={{{}}},'.format(', '.join(record['tags'])))
+            tags = tags | set(record['tags'])
+        for key in ['html', 'code', 'Qing', 'abstract']:
+            if key in record.keys():
+                outputs.append('  {}={{{}}},'.format(key.lower(), record[key]))
+        outputs.append('  bibtex_show={{true}},'.format())
+        outputs.append('}')
+        outputs.append('')
+    print('\r\n'.join(outputs), file=open(outname, 'w'))
+    years = sorted(list(years))[::-1]
+    tags = sorted(list(tags))
+    with open(join(dirname, '..', '_data', 'reading.yml'), 'w') as f:
+        yaml.safe_dump({
+            'years': years,
+            'tags': tags,
+        }, f, allow_unicode=True)
+
+if __name__ == '__main__':
+    global_cache_name = join(dirname, '_global_cache.yml')
+    config = {
+        '_bibliography/mv1p.yml': 'human',
+        '_bibliography/arxiv2210.yml': 'none'
+    }
+    records = []
+    for filename, category in config.items():
+        records.extend(reading_yml(filename, category))
+    write_to_bib(records, outname = join(dirname, 'output.bib'))

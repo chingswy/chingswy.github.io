@@ -27,3 +27,9 @@ nav_order: 3
   {% endfor %}
 </div>
 {% endif %}
+
+## Star History
+
+{% for repo in site.data.repositories.github_repos %}
+[![Star History Chart](https://api.star-history.com/svg?repos={{repo}}&type=Date)](https://star-history.com/#{{repo}}&Date)
+{% endfor %}

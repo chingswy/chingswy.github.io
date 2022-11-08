@@ -10,6 +10,8 @@ layout: default
   </header>
 
   <div class="publications">
-    <!-- pages/projects.md -->
-    {% bibliography -f output -q @*[tags ~= {{ page.title }} ]* %}
+    {%- for y in site.data.reading.years %}
+  <h2 class="year">{{y}}</h2>
+    {% bibliography -f output -q @*[year={{y}} && tags ~= {{ page.title }} ]* %}
+    {% endfor %}
 </div>

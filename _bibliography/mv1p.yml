@@ -1,0 +1,123 @@
+lrmesh:
+  title: Learnable human mesh triangulation for 3D human pose and shape estimation
+  url: https://arxiv.org/abs/2208.11251
+  keywords: human, mv, 1p, SMPL, e2e
+  figure: 2
+  Qing: 每个视角进行可见性判断再进行特征融合，最后接了拟合模块
+
+lrtri:
+  title: Learnable Triangulation of Human Pose
+  url: https://arxiv.org/abs/1905.05754
+  keywords: human, mv, 1p, 3dpose, e2e
+  figure: 2
+  code: https://github.com/karfly/learnable-triangulation-pytorch
+  Qing: 多个视角的特征反投影到3D空间中通过3D网络获得最终输出
+
+2203.15865:
+  title: On Triangulation as a Form of Self-Supervision for 3D Human Pose Estimation
+  url: https://arxiv.org/abs/2203.15865
+  figure: 1
+  Qing: 使用多视角三角化来自监督
+  keywords: human, mv, 1p, 3dpose, e2d, self-supervised
+
+temporal3d:
+  title: Learning Temporal 3D Human Pose Estimation with Pseudo-Label
+  url: https://arxiv.org/pdf/2110.07578.pdf
+  figure: 2
+  Qing: 输入一段序列的2D关键点，输出3Dpose，通过多视角的一致性来监督
+  keywords: human, monocular, 1p, 3dpose, self-supervised
+
+PPT:
+  title: "PPT: token-Pruned Pose Transformer for monocular and multi-view human pose estimation"
+  url: https://arxiv.org/pdf/2209.08194.pdf
+  keywords: human, mv, 1p, 3dpose
+  Qing: 使用人体区域来做fusion
+  figure: 1
+
+VTP:
+  title: "VTP: Volumetric Transformer for Multi-view Multi-person 3D Pose Estimation"
+  url: https://arxiv.org/pdf/2205.12602.pdf
+  keywords: human, mv, mp, 3dpose, transformer
+  figure: 1 
+  Qing: 使用3DVolTransformer回归人体坐标
+
+DMVMP:
+  title: Direct Multi-view Multi-person 3D Pose Estimation
+  url: https://arxiv.org/abs/2111.04076
+  figure: 1
+  Qing: 多视角的feature直接通过transformer聚合  
+  keywords: human, mv, mp, 3dpose, transformer
+
+spine:
+  title: A Novel Skeleton-based Model with Spine for 3D Human Pose Estimation
+  url: https://ieeexplore.ieee.org/document/9720811/
+  Qing: 使用贝塞尔曲线来控制腰部曲线
+  keywords: human, 1p, 3dpose, human-representation
+
+# title: Multi-view 3D Smooth Human Pose Estimation based on Heatmap Filtering and Spatio-temporal Information
+# Qing: 用网络来过滤heatmap
+
+GeneralTri:
+  title: Generalizable Human Pose Triangulation
+  url: https://arxiv.org/pdf/2110.00280.pdf
+  Qing: 提出了一个框架来解决泛化的三角化问题
+  keywords: human, mv, 1p, 3dpose
+
+2110.05092:
+  title: Adaptive Multi-view and Temporal Fusing Transformer for 3D Human Pose Estimation
+  url: https://arxiv.org/pdf/2110.05092.pdf
+  figure: 1
+  Qing: 多视角特征融合的transformer以及时序融合的transformer
+  keywords: human, mv, 1p, 3dpose, transformer
+
+crossviewfusion:
+  title: Cross View Fusion for 3D Human Pose Estimation
+  url: https://arxiv.org/pdf/1909.01203.pdf
+  Qing: 直接多视角的融合
+  keywords: human, mv, 1p, 3dpose
+
+harvesting:
+  url: https://arxiv.org/pdf/1704.04793.pdf
+  Qing: 多视角的heatmap生成了3D特征，然后使用3Dpictorial获取骨架位置
+  keywords: human, mv, 1p, 3dpose
+  figure: 1
+
+2012.15175:
+  title: Rethinking the Heatmap Regression for Bottom-up Human Pose Estimation
+  url: https://arxiv.org/pdf/2012.15175.pdf
+  keywords: human, image, 2dpose
+  Qing: 均衡不同距离的heatmap的高斯核大小
+
+MVPAssociation:
+  title: Self-supervised Multi-view Person Association and Its Applications
+  url: https://arxiv.org/pdf/1805.08717.pdf
+  keywords: human, mv, mp, 3dpose, self-supervised
+  Qing: 自监督的特征学习进行人体的聚类
+
+LVD:
+  url: https://arxiv.org/pdf/2205.06254.pdf
+  Qing: 一种新的姿态估计的框架
+  keywords: human, monocular, 1p, SMPL
+  figure: 2
+
+AdaFuse:
+  title: "AdaFuse: Adaptive Multiview Fusion for Accurate Human Pose Estimation in the Wild"
+  url: https://arxiv.org/pdf/2010.13302.pdf
+  code: https://github.com/zhezh/adafuse-3d-human-pose
+  figure: 2
+  Qing: 同时输入多视角的图像关键点估计heatmap，输出2D关键点
+  keywords: human, mv, 1p, 3dpose
+
+semidense:
+  title: "Semi-supervised Dense Keypoints using Unlabeled Multiview Images"
+  url: https://arxiv.org/pdf/2109.09299.pdf
+  keywords: human, mv, 1p, densepose, semi-supervised
+  Qing: 提出了软的对应关系通过几何一致性来约束
+  figure: 1
+  
+graphmp:
+  title: Graph-Based 3D Multi-Person Pose Estimation Using Multi-View Images
+  url: https://arxiv.org/pdf/2109.05885.pdf
+  figure: 1
+  Qing: 通过图网络来学习多人对应关系
+  keywords: human, mv, mp, 3dpose, GNN

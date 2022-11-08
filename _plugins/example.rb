@@ -26,7 +26,7 @@ module SamplePlugin
 
         dir = 'tags'
         name = 'my-file.html'
-
+        @config['tags'] = site.data['reading']['tags']
         # site.pages << Jekyll::PageWithoutAFile.new(site, site.source, dir, name).tap do |file|
         #     file.content = '<p>abcdef ghji</p>'
         #     file.data.merge!(
