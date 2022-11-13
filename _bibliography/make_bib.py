@@ -65,10 +65,9 @@ def parsing_my_info(value, record):
         for i, keyword in enumerate(keywords):
             keywords[i] = keyword.replace(' ', '-')
         record['tags'] = keywords
-    if 'Qing' in value.keys():
-        record['Qing'] = value['Qing']
-    if 'code' in value.keys():
-        record['code'] = value['code']
+    for key in ['Qing', 'Sida', 'code']:
+        if key in value.keys():
+            record[key] = value[key]
     assert 'title' in record.keys(), value
     return record
 
@@ -113,7 +112,7 @@ def write_to_bib(records, outname):
         if 'tags' in record.keys():
             outputs.append('  tags={{{}}},'.format(', '.join(record['tags'])))
             tags = tags | set(record['tags'])
-        for key in ['html', 'code', 'Qing', 'abstract']:
+        for key in ['html', 'code', 'Qing', 'abstract', 'Sida']:
             if key in record.keys():
                 outputs.append('  {}={{{}}},'.format(key.lower(), record[key]))
         outputs.append('  bibtex_show={{true}},'.format())
@@ -122,19 +121,33 @@ def write_to_bib(records, outname):
     print('\r\n'.join(outputs), file=open(outname, 'w'))
     years = sorted(list(years))[::-1]
     tags = sorted(list(tags))
+    return years, tags
+
+if __name__ == '__main__':
+    global_cache_name = join(dirname, '_global_cache.yml')
+    config = {
+        'output.bib': {
+            '_bibliography/mv1p.yml': 'human',
+            '_bibliography/arxiv2210.yml': 'none'
+        },
+        'output_sida.bib': {
+            '_bibliography/sida.yml': 'none'
+        }
+    }
+    tags_all, years_all = [], []
+    for outname, configs in config.items():
+        records = []
+        for filename, category in configs.items():
+            records.extend(reading_yml(filename, category))
+        years, tags = write_to_bib(records, outname = join(dirname, outname))
+        tags_all.extend(tags)
+        years_all.extend(years)
+    years_all = set(years_all)
+    tags_all = set(tags_all)
+    years = sorted(list(years_all))[::-1]
+    tags = sorted(list(tags_all))
     with open(join(dirname, '..', '_data', 'reading.yml'), 'w') as f:
         yaml.safe_dump({
             'years': years,
             'tags': tags,
         }, f, allow_unicode=True)
-
-if __name__ == '__main__':
-    global_cache_name = join(dirname, '_global_cache.yml')
-    config = {
-        '_bibliography/mv1p.yml': 'human',
-        '_bibliography/arxiv2210.yml': 'none'
-    }
-    records = []
-    for filename, category in config.items():
-        records.extend(reading_yml(filename, category))
-    write_to_bib(records, outname = join(dirname, 'output.bib'))

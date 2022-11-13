@@ -134,6 +134,9 @@
           {%- if entry.qing %}
           <a class="qing btn btn-sm z-depth-0" role="button">Qing</a>
           {%- endif %}
+          {%- if entry.sida %}
+          <a class="sida btn btn-sm z-depth-0" role="button">Sida</a>
+          {%- endif %}
 
           {%- if entry.arxiv %}
             <a href="http://arxiv.org/abs/{{ entry.arxiv }}" class="btn btn-sm z-depth-0" role="button">arXiv</a>
@@ -197,6 +200,13 @@
           <!-- Hidden qing block -->
           <div class="qing hidden">
             <p>{{ entry.qing }}</p>
+          </div>
+          {%- endif -%}
+
+          {% if entry.sida -%}
+          <!-- Hidden sida block -->
+          <div class="sida hidden">
+            <p>{{ entry.sida }}</p>
           </div>
           {%- endif -%}
 
