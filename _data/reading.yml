@@ -1,9 +1,13 @@
 tags:
 - 1p
+- 1v1p
+- 1vmp
 - 2dpose
 - 3dpose
 - GNN
 - SMPL
+- accelerate
+- bottom-up
 - clothed
 - contact
 - dataset
@@ -11,11 +15,15 @@ tags:
 - differentiable-rendering
 - e2e
 - feet
+- gcn
 - hand-pose
 - human
 - human-modeling
+- human-nerf
 - human-part
 - human-performance-capture
+- human-pose-estimation
+- human-reconstruction
 - human-representation
 - human-shape
 - human-synthesis
@@ -32,6 +40,7 @@ tags:
 - multi-person
 - multi-view
 - mv
+- mv1p
 - nerf
 - neural-3d-videos
 - neural-rendering
@@ -48,6 +57,7 @@ tags:
 - semi-supervised
 - text-to-shape
 - text2pose
+- top-down
 - tracking
 - transformer
 - uncalibrated

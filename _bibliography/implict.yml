@@ -1,0 +1,8 @@
+LIIF:
+  title: Learning Continuous Image Representation with Local Implicit Image Function
+  url: https://arxiv.org/pdf/2012.09161.pdf
+  Qing: Local Implicit Image Function，输入网络局部的格点和当前位置到格点的坐标差，输出预测的颜色
+JIFF:
+  title: Joint Implicit Image Function for Guided Depth Super-Resolution
+  url: https://arxiv.org/pdf/2107.08717.pdf
+  Qing: 在LIFF的基础上，同时输出格子的权重

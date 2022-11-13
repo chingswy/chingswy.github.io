@@ -10,4 +10,7 @@ children:
     - title: divider
     - title: Sida
       permalink: /reading_sida/
+    - title: divider
+    - title: ECCV22/human
+      permalink: /reading_eccv22/
 ---

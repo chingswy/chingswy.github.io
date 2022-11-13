@@ -1,1 +1,92 @@
 # 整理的ECCV22的人体相关的论文
+GGNerf:
+  url: https://arxiv.org/pdf/2112.04312.pdf
+  Qing: Geometry-guided image feature integration获得density volume，减少采样的点的数量
+  keywords: human-nerf, accelerate
+
+Regularizing_Vector_Embedding:
+  url: https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136660105.pdf
+  title: Regularizing Vector Embedding in Bottom-Up Human Pose Estimation
+  Qing: 使用scale来提升embedding
+  keywords: human-pose-estimation, bottom-up
+
+Structural_Triangulation:
+  url: https://www.ecva.net/papers/eccv_2022/papers_ECCV/papers/136650685.pdf
+  title: "Structural Triangulation: A Closed-Form Solution to Constrained 3D Human Pose Estimation"
+  keywords: mv1p
+  Qing: 输入相机参数和骨架结构信息，优化的方式获得人体骨架
+
+NDF:
+  url: https://arxiv.org/pdf/2207.09193.pdf
+  keywords: view-synthesis
+
+Mobius_GCN:
+  url: https://arxiv.org/pdf/2203.10554.pdf
+  keywords: human-pose-estimation, gcn
+
+PPT:
+  url: https://arxiv.org/pdf/2209.08194.pdf
+
+DiffuStereo:
+  url: https://arxiv.org/pdf/2207.08000.pdf
+  keywords: human-reconstruction
+
+SimCC:
+  url: https://arxiv.org/pdf/2107.03332.pdf
+  Q: 从坐标分类的角度来看2D人体姿态估计问题
+  k: human-pose-estimation
+
+Occulusion_reasoning:
+  url: https://arxiv.org/pdf/2208.00090.pdf
+  k: human-pose-estimation, 1vmp
+  Q: 估计被遮挡住的数据然后再进行association
+
+VisDB:
+  url: https://arxiv.org/pdf/2208.10652.pdf
+  title: Learning Visibility for Robust Dense Human Body Estimation
+  Q: 考虑了遮挡来估计SMPL
+  k: SMPL, 1v1p
+
+FastMETRO:
+  url: https://arxiv.org/pdf/2207.13820.pdf
+  Q: 为了高效的学习关系，mask掉了没有连接的vertices
+  code: https://github.com/postech-ami/FastMETRO
+
+SmoothNet:
+  url: https://arxiv.org/pdf/2112.13715.pdf
+
+SCIO:
+  url: https://arxiv.org/pdf/2207.02425.pdf
+  k: 2dpose, top-down
+
+KAPAO: 
+  url: https://arxiv.org/pdf/2111.08557.pdf
+  k: 2dpose, bottom-up
+  Q: 把关键点当做物体来直接用yolo回归
+
+Poseur:
+  url: https://arxiv.org/pdf/2201.07412.pdf
+  k: 2dpose, top-down, transformer
+
+VirtualPose:
+  url: https://arxiv.org/pdf/2207.09949.pdf
+  Q: 使用root depth估计人体三维的位置，使用3DCNN恢复关键点位置
+  code: https://github.com/wkom/VirtualPose
+
+HULC:
+  url: https://arxiv.org/pdf/2205.05677.pdf
+  k: contact
+
+FLEX:
+  url: https://arxiv.org/pdf/2105.01937.pdf
+  code: https://briang13.github.io/FLEX/
+  Q: 输入多视角的序列的2D估计，估计脚步接触标签以及骨长、3D旋转，可以不给定相机
+  k: 3dpose, mv1p
+
+neural_capture:
+  url: https://arxiv.org/pdf/2208.08728.pdf
+  Q: 使用query embedding包含了距离、方向
+
+BodySLAM:
+  url: https://arxiv.org/pdf/2205.02301.pdf
+  Q: 同时完成相机定位和人体跟踪

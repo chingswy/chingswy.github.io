@@ -88,6 +88,10 @@ def reading_yml(filename, category):
         record = {
             'key': key
         }
+        # 替换一下value的键名
+        for alias_name, key_name in [('Q', 'Qing'), ('k', 'keywords'), ('t', 'title')]:
+            if alias_name in value.keys() and key_name not in value.keys():
+                value[key_name] = value.pop(alias_name)
         if 'url' in value.keys() and 'arxiv' in value['url']:
             record = parsing_arxiv_paper(value, record)
         record = parsing_my_info(value, record)
@@ -128,10 +132,14 @@ if __name__ == '__main__':
     config = {
         'output.bib': {
             '_bibliography/mv1p.yml': 'human',
-            '_bibliography/arxiv2210.yml': 'none'
+            '_bibliography/arxiv2210.yml': 'none',
+            '_bibliography/eccv22_human.yml': 'none',
         },
         'output_sida.bib': {
             '_bibliography/sida.yml': 'none'
+        },
+        'eccv22_human.bib':{
+            '_bibliography/eccv22_human.yml': 'none',
         }
     }
     tags_all, years_all = [], []
