@@ -10,6 +10,7 @@ import yaml
 import arxiv
 from os.path import join
 import os
+from glob import glob
 dirname = os.path.abspath(os.path.dirname(__file__))
 
 mywarn = print
@@ -34,7 +35,7 @@ def parsing_arxiv_paper(value, record):
     record['html'] = url
     arxivid = url.split('/')[-1].replace('.pdf', '')
     year = '20' + arxivid[:2]
-    record['year'] = year
+    record['year'] = int(year)
     print('>> searching paper {} in arxiv'.format(url))
     search = arxiv.Search(id_list=[arxivid])
     results = list(search.results())
@@ -65,13 +66,15 @@ def parsing_my_info(value, record):
         for i, keyword in enumerate(keywords):
             keywords[i] = keyword.replace(' ', '-')
         record['tags'] = keywords
-    for key in ['Qing', 'Sida', 'code']:
+    for key in ['Qing', 'Sida', 'code', 'preview']:
         if key in value.keys():
             record[key] = value[key]
+    if 'author' not in value.keys() and 'author' not in record.keys():
+        record['author'] = []
     assert 'title' in record.keys(), value
     return record
 
-def reading_yml(filename, category):
+def reading_yml(filename, default_config):
     if os.path.exists(global_cache_name):
         with open(global_cache_name, 'r') as f:
             global_cache = yaml.safe_load(f)
@@ -81,6 +84,8 @@ def reading_yml(filename, category):
         datas = yaml.safe_load(f)
     records = []
     for key, value in datas.items():
+        if not isinstance(key, str):
+            key = str(key)
         if key in global_cache.keys():
             record = global_cache[key]
             records.append(record)
@@ -94,6 +99,11 @@ def reading_yml(filename, category):
                 value[key_name] = value.pop(alias_name)
         if 'url' in value.keys() and 'arxiv' in value['url']:
             record = parsing_arxiv_paper(value, record)
+        elif 'url' in value.keys():
+            record['html'] = value['url']
+        for default_key, default_value in default_config.items():
+            if default_key not in record.keys():
+                record[default_key] = default_value
         record = parsing_my_info(value, record)
         global_cache[key] = record
         records.append(record)
@@ -106,6 +116,10 @@ def write_to_bib(records, outname):
     years, tags = set(), set()
     for record in records:
         res = '@inproceedings{{{},'.format(record['key'])
+        # 看看有没有图片
+        imgnames = glob(join('assets', 'paper-reading', record['key']+'*'))
+        if len(imgnames) == 1:
+            record['preview'] = imgnames[0]
         outputs.append(res)
         outputs.append('  title={{{}}},'.format(record['title']))
         if 'author' in record.keys():
@@ -116,7 +130,7 @@ def write_to_bib(records, outname):
         if 'tags' in record.keys():
             outputs.append('  tags={{{}}},'.format(', '.join(record['tags'])))
             tags = tags | set(record['tags'])
-        for key in ['html', 'code', 'Qing', 'abstract', 'Sida']:
+        for key in ['booktitle', 'journal', 'html', 'code', 'preview', 'Qing', 'abstract', 'Sida']:
             if key in record.keys():
                 outputs.append('  {}={{{}}},'.format(key.lower(), record[key]))
         outputs.append('  bibtex_show={{true}},'.format())
@@ -131,22 +145,30 @@ if __name__ == '__main__':
     global_cache_name = join(dirname, '_global_cache.yml')
     config = {
         'output.bib': {
-            '_bibliography/mv1p.yml': 'human',
-            '_bibliography/arxiv2210.yml': 'none',
-            '_bibliography/eccv22_human.yml': 'none',
+            '_bibliography/mv1p.yml': {'category': 'human'},
+            '_bibliography/arxiv2210.yml': {},
+            '_bibliography/eccv22_human.yml': {
+                'category': 'human',
+                'year': 2022,
+                'booktitle': 'ECCV',
+            },
         },
         'output_sida.bib': {
-            '_bibliography/sida.yml': 'none'
+            '_bibliography/sida.yml': {}
         },
         'eccv22_human.bib':{
-            '_bibliography/eccv22_human.yml': 'none',
+            '_bibliography/eccv22_human.yml': {
+                'year': 2022,
+                'category': 'human',
+                'booktitle': 'ECCV',
+            },
         }
     }
     tags_all, years_all = [], []
     for outname, configs in config.items():
         records = []
-        for filename, category in configs.items():
-            records.extend(reading_yml(filename, category))
+        for filename, default_config in configs.items():
+            records.extend(reading_yml(filename, default_config))
         years, tags = write_to_bib(records, outname = join(dirname, outname))
         tags_all.extend(tags)
         years_all.extend(years)

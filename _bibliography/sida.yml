@@ -71,3 +71,33 @@ TextCraft:
   keywords: text-to-shape
   Sida: Text-to-shape generation without training on paired data. 在一组3D shape上训练. 训练基于CLIP的image feature生成shape的网络. 从而实现基于CLIP的texture feature生成shape.
   Novelty: 3
+
+QRF:
+  url: https://arxiv.org/pdf/2211.03418.pdf
+  k: nerf-speed
+  Sida: 通过quantum techniques加速nerf.
+
+ParticleNeRF:
+  url: https://arxiv.org/pdf/2211.04041.pdf
+  k: view-synthesis, dynamic-scene
+  Sida: 提出了particle-based parametric encoding, 将features anchor在dynamic geometry, 实现view synthesis of dynamic scenes. 用position-based dynamics physics system表示dynamic geometry.
+
+EditableIndoorLight:
+  url: https://arxiv.org/pdf/2211.03928.pdf
+  k: editable, lighting
+  Sida: 提出了一种parametric light, 支持realistic rendering和编辑.
+
+Common_Pets:
+  url: https://arxiv.org/pdf/2211.03889.pdf
+  k: monocular-video, deformable-objects, view-synthesis
+  Sida: 提出了一个deformable objects的数据集, 用于训练一个网络, 从几帧图像中重建出deformable objects.
+
+Learning_Visual_Locomotion:
+  url: https://arxiv.org/pdf/2211.03785.pdf
+  k: visual-locomotion
+  Sida: 在walking robotics中加入了visual module, 学习处理upcoming geometry. 通过proprioception在real world中训练这个visual module.
+
+Temporal-MPI:
+  url: https://arxiv.org/pdf/2111.10533.pdf
+  k: view-synthesis, dynamic-scene
+  Sida: 构建一组MPI basis和coefficients, 通过linear combinations得到每一帧的MPI, 实现dynamic view synthesis.

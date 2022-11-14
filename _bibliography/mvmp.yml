@@ -1,0 +1,81 @@
+# 这个文件用于记录多视角多人的相关工作
+# 这个部分主要分为几个阶段
+# 
+# 主要分类为
+# 主要标签有
+4dassociation:
+  title: 4D Association Graph for Realtime Multi-Person Motion Capture Using Multiple Video Cameras
+  booktitle: CVPR2020
+  tags: mvmp, optimize, graph
+  Qing: 通过精细设计的图的算法快速的取出稳定的关键点
+
+lightweight:
+  title: Lightweight Multi-person Total Motion Capture Using Sparse Multi-view Cameras
+  booktitle: ICCV2021
+  tags: mvmp, smpl, body+hand
+  Qing: 在身体的基础上增加手和脸的定位，再接一个全身的拟合模块
+
+shape_multi:
+  title: Shape-aware Multi-Person Pose Estimation from Multi-View Images
+  tags: mvmp, smpl
+  Qing: 关键点层面生成proposal，然后去迭代的更新SMPL参数
+
+voxelpose:
+  title: "Voxelpose: Towards multi-camera 3d human pose estimation in wild environment"
+  Qing: 使用3D的网络融合多视角的特征，生成人体的proposal，对每个proposal获得3D坐标
+
+Deepmulticap:
+  title: "Deepmulticap: Performance capture of multiple characters using sparse multiview cameras"
+  Qing: 多视角单独恢复细致的mesh
+
+part:
+  title: "Part-aware Measurement for Robust Multi-View Multi-Human 3D Pose Estimation and Tracking"
+  booktitle: CVPR2021
+  Qing: 初始化3D骨架，后面就使用2D-3D的匹配
+
+  title: Graph-based 3d multi-person pose estimation using multi-view images
+
+  title: Dynamic multi-person mesh recovery from uncalibrated multi-view cameras
+  url: https://arxiv.org/pdf/2110.10355.pdf
+  Qing: 同时恢复人体运动与相机参数
+
+  title: Synergetic Reconstruction from 2D Pose and 3D Motion for Wide-Space Multi-Person Video Motion Capture in the Wild
+  url: https://arxiv.org/pdf/2001.05613.pdf
+
+voxelcrowdpose:
+  title: "Voxelcrowdpose: Multi-View Multi-Person 3d Pose Estimation with Associative Embedding"
+  Qing: 3DCNN获得human proposals，接着获得joint proposal，接着获得joint的位置
+  url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4261728
+
+  title: "Permutation-Invariant Relational Network for Multi-person 3D Pose Estimation"
+  url: https://arxiv.org/pdf/2204.04913.pdf
+  Qing: 使用transformer直接refine每个人的pose
+
+  title: Multi-View Multi-Human Association With Deep Assignment Network
+  Qing: 提取每个人的Bbox以及对应的特征，直接通过网络估计assignment matrix
+
+  title: Graph Neural Networks for Cross-Camera Data Association
+  Qing: 使用图网络来估计多视角的人体匹配问题，推理的时候通过后处理获得多人
+
+
+D-MAE:
+  title: A Dual-Masked Auto-Encoder for Robust Motion Capture with Spatial-Temporal Skeletal Token Completion
+  url: https://arxiv.org/pdf/2207.07381.pdf
+
+Light3DPose:
+  title: "Light3DPose: Real-time Multi-Person 3D Pose Estimation from Multiple Views"
+
+mvm:
+  title: "Multi-view matching (mvm): Facilitating multi-person 3d pose estimation learning with action-frozen people video"
+  Qing: 用静止数据来提供GT
+  url: https://arxiv.org/pdf/2004.05275.pdf
+
+SPEC:
+  title: "SPEC: Seeing People in the Wild with an Estimated Camera"
+  booktitle: ICCV2021
+  tags: image, calibrate, smpl
+  Qing: 同时估计相机的焦距和角度与人体姿态
+
+  title: Full-body motion capture for multiple closely interacting persons
+  url: http://cic.tju.edu.cn/faculty/likun/GM.pdf
+  Qing: 简单的tracking

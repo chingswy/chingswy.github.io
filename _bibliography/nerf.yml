@@ -1,0 +1,36 @@
+# 这个文件用于记录nerf相关的论文
+# 主要标签：
+# representation      : 不同的nerf的表达，例如mip-nerf
+# extra-input         : 一些额外的输入，例如RGBD, audience
+# extra-output        : 一些额外的输出，例如Semantic-NeRF
+# supervision         : 一些额外的约束，例如DS-nerf
+# nerf-speed               : 对nerf进行加速，例如PlenOctree
+# general             : 泛化的nerf，例如IBRNet
+# GAN                 : GIRAFFE
+# edit                : 可编辑的nerf
+# pose-estimation     : iMAP, BARF
+
+# NeRF: Neural Radiance Field in 3D Vision, A Comprehensive Review
+# https://arxiv.org/pdf/2210.00379.pdf
+
+NeRV:
+  title: "NeRV: Neural Representations for Videos"
+  url: https://arxiv.org/pdf/2110.13903.pdf
+
+NeRV2:
+  title: "NeRV: Neural Reflectance and Visibility Fields for Relighting and View Synthesis"
+  url: https://arxiv.org/pdf/2012.03927.pdf
+
+ReFu:
+  title: "ReFu: Refine and Fuse the Unobserved View for Detail-Preserving Single-Image 3D Human Reconstruction"
+  url: https://arxiv.org/pdf/2211.04753.pdf
+  keywords: mesh
+
+common_pets:
+  title: "Common Pets in 3D: Dynamic New-View Synthesis of Real-Life Deformable Categories"
+  url: https://arxiv.org/pdf/2211.03889.pdf
+
+TAP-Vid:
+  title: "TAP-Vid: A Benchmark for Tracking Any Point in a Video"
+  url: https://arxiv.org/pdf/2211.03726.pdf
+

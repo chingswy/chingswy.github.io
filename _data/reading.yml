@@ -11,9 +11,12 @@ tags:
 - clothed
 - contact
 - dataset
+- deformable-objects
 - densepose
 - differentiable-rendering
+- dynamic-scene
 - e2e
+- editable
 - feet
 - gcn
 - hand-pose
@@ -30,10 +33,12 @@ tags:
 - image
 - implicit
 - implicit-model
+- lighting
 - manipulation
 - matting
 - mocap
 - monocular
+- monocular-video
 - motion
 - motion-prediction
 - mp
@@ -42,6 +47,7 @@ tags:
 - mv
 - mv1p
 - nerf
+- nerf-speed
 - neural-3d-videos
 - neural-rendering
 - nonrigid
@@ -63,10 +69,11 @@ tags:
 - uncalibrated
 - videos
 - view-synthesis
+- visual-locomotion
 years:
-- '2022'
-- '2021'
-- '2020'
-- '2019'
-- '2018'
-- '2017'
+- 2022
+- 2021
+- 2020
+- 2019
+- 2018
+- 2017

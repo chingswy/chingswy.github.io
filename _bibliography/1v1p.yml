@@ -1,0 +1,45 @@
+# 这个文件用于存储单视角单人姿态估计，主要包含的分类为
+# HMR: human mesh recovery from image
+# 主要包含的标签:
+# - 3dpose/SMPL/vertices/mesh: vertices指直接回归SMPL的顶点位置，mesh指回归一个detail mesh
+# - image/video
+# - optimize/regress
+# - scene: 考虑场景信息
+
+SMPLify:
+  url:
+  keywords: SMPL, optimize, image
+
+HMR:
+  url:
+  keywords: SMPL, regress, image
+
+SPIN:
+  url: 
+  keywords: SMPL, regress, image
+  Qing: 通过网络的先验去拟合图片得到相对更好的SMPL参数用于监督网络
+
+PARE:
+  
+
+PROX:
+
+DenseBody:
+  title: "DenseBody: Directly Regressing Dense 3D Human Pose and Shape From a Single Color Image"
+  url: https://arxiv.org/pdf/1903.10153.pdf
+  Qing: 图片直接CNN回归UVMap
+
+TexMesh:
+  title: "TexMesh: Reconstructing Detailed Human Texture and Geometry from RGB-D Video"
+  url: https://minhpvo.github.io/index_files/Papers/ECCV20_Human.pdf
+  Qing: 使用CNN来refine从图像中取出来的texture
+
+texture_inpainting:
+  title: Coordinate-based Texture Inpainting for Pose-Guided Image Generation
+  url: https://arxiv.org/pdf/1811.11459.pdf
+  Qing: inpaint texture来warp图像到另一个pose
+
+360-degree:
+  title: 360-Degree Textures of People in Clothing from a Single Image
+  url: https://arxiv.org/pdf/1908.07117.pdf
+  Qing: 输入图像估计DensePose获得部分纹理然后补全纹理，同时估计位移图，获得最终的mesh
