@@ -9,3 +9,4 @@ _site
 Gemfile.lock
 vendor
 _bibliography/_arxiv
+_bibliography/_global_cache.yml
