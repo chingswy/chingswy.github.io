@@ -6,6 +6,8 @@
         {%- if entry.preview -%}
           {% if entry.preview contains '://' -%}
           <img class="preview z-depth-1 rounded" src="{{ entry.preview }}">
+          {% elsif entry.preview contains 'mp4' -%}
+          <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted=""><source src="{{ entry.preview }}" type="video/mp4"></video>
           {%- else -%}
           <!-- <img class="preview z-depth-1 rounded" src="{{ entry.preview | prepend: '/assets/paper-reading/' | relative_url }}"> -->
           <img class="preview z-depth-1 rounded" src="{{ entry.preview | relative_url }}">
