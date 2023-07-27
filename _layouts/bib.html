@@ -5,9 +5,9 @@
         <div class="col-sm-2 {% if entry.preview %}preview{% else %}abbr{% endif %}">
         {%- if entry.preview -%}
           {% if entry.preview contains '.mp4' -%}
-            <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted=""><source src="{{ entry.preview }}" type="video/mp4"></video>
+            <video width="200%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted=""><source src="{{ entry.preview }}" type="video/mp4"></video>
           {% elsif entry.preview contains '://' -%}
-          <img class="preview z-depth-1 rounded" src="{{ entry.preview }}">
+            <img class="preview z-depth-1 rounded" src="{{ entry.preview }}">
           {%- else -%}
           <!-- <img class="preview z-depth-1 rounded" src="{{ entry.preview | prepend: '/assets/paper-reading/' | relative_url }}"> -->
           <img class="preview z-depth-1 rounded" src="{{ entry.preview | relative_url }}">
