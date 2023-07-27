@@ -494,7 +494,8 @@ footer.sticky-bottom {
     li {
       margin-bottom: 1rem;
       .preview {
-        width: 200%;
+        width: 100%;
+        flex-grow: 2;
         min-width: 80px;
         max-width: 200px;
       }
