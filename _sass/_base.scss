@@ -730,9 +730,9 @@ progress {
 }
 
 .video-container:hover {
-  width: 150%; /* 鼠标悬停时的宽度，两倍于初始宽度 */
   z-index: 9999;
-  transform: translate(-16.25%, -16.25%);
+  -webkit-transform: scale(1.5) translate(-16.25%, -16.25%);
+  transform: scale(1.5) translate(-16.25%, -16.25%);
 }
 
 .video-container-left {
@@ -740,8 +740,8 @@ progress {
 }
 
 .video-container-left:hover {
-  width: 150%; /* 鼠标悬停时的宽度，两倍于初始宽度 */
-  transform: translate(0%, -16.25%);
+  -webkit-transform: scale(1.5) translate(-16.25%, -16.25%);
+  transform: scale(1.5) translate(0%, -16.25%);
 }
 
 .video-container-right {
@@ -749,6 +749,6 @@ progress {
 }
 
 .video-container-right:hover {
-  width: 150%; /* 鼠标悬停时的宽度，两倍于初始宽度 */
-  transform: translate(0%, -16.25%);
+  -webkit-transform: scale(1.5) translate(-16.25%, -16.25%);
+  transform: scale(1.5) translate(0%, -16.25%);
 }
