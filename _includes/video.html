@@ -1,0 +1,38 @@
+{%- assign img_path = include.path | remove: ".jpg" | remove: ".jpeg" | remove: ".png" | remove: ".tiff" -%}
+
+<figure>
+  <div 
+  {% if include.position == "left" %}
+    class="video-container video-container-left"
+  {% elsif include.position == "right" %}
+    class="video-container video-container-right"
+  {% else %}
+    class="video-container"
+  {% endif %}  
+  >
+    <!-- <video class="rounded z-depth-1" width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted=""><source src="{{ include.path }}" type="video/mp4"></video> -->
+    <a href="{{ include.path }}" target="_blank" title="click to play">
+      <video class="myvideo rounded z-depth-1" width="100%" playsinline="" loop="loop" preload="" onmouseover="this.play()" onmouseout="this.pause();" muted=""><source src="{{ include.path }}" type="video/mp4"></video>
+    </a>
+  </div>
+
+
+    <!-- Fallback to the original file -->
+    <!-- <img 
+      src="{{ include.path | relative_url }}"
+      {% if include.class %}class="{{ include.class }}"{% endif %}  
+      {% if include.width %}width="{{ include.width }}"{% else %}width="auto"{% endif %} 
+      {% if include.height %}height="{{ include.height }}"{% else %}height="auto"{% endif %} 
+      {% if include.min-width %}min-width="{{ include.min-width }}"{% endif %} 
+      {% if include.min-height %}min-height="{{ include.min-height }}"{% endif %} 
+      {% if include.max-width %}max-width="{{ include.max-width }}"{% endif %} 
+      {% if include.max-height %}height="{{ include.max-height }}"{% endif %} 
+      {% if include.alt %}alt="{{ include.alt }}"{% endif %} 
+      {% if include.title %}title="{{ include.title }}"{% endif %} 
+      {% if include.zoomable %}data-zoomable{% endif %}
+      onerror="this.onerror=null; $('.responsive-img-srcset').remove();"
+    /> -->
+
+  {%- if include.caption -%}<figcaption class="caption">{{ include.caption }}</figcaption>{%- endif %}
+
+</figure>

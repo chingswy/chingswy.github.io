@@ -9,6 +9,7 @@
   cover={neural_body.png},
   bibtex_show={true},
   abstract={xxx},
+  preview={https://xzhou.me/videos/neuralbody.mp4}
 }
 
 
@@ -35,7 +36,7 @@ Multi-view Videos},
   selected={true}
 }
 
-@inproceedings{10.1145/3528233.3530746,
+@inproceedings{quickpose,
   author = {Zhou Zhize and Shuai Qing and Wang Yize and Fang Qi and Ji Xiaopeng and Li Fashuai and Bao Hujun and Zhou Xiaowei},
   title = {QuickPose: Real-Time Multi-View Multi-Person Pose Estimation in Crowded Scenes},
   year = {2022},
@@ -45,10 +46,11 @@ Multi-view Videos},
   url = {https://doi.org/10.1145/3528233.3530746},
   doi = {10.1145/3528233.3530746},
   abstract = {This work proposes a real-time algorithm for reconstructing 3D human poses in crowded scenes from multiple calibrated views. The key challenge of this problem is to efficiently match 2D observations across multiple views. Previous methods perform multi-view matching either at the full-body level, which is sensitive to 2D pose estimation error, or at the part level, which ignores 2D constraints between different types of body parts in the same view. Instead, our approach reasons about all plausible skeleton proposals during multi-view matching, where each skeleton may consist of an arbitrary number of parts instead of being a whole body or a single part. To this end, we formulate the multi-view matching problem as mode seeking in the space of skeleton proposals and develop an efficient algorithm named QuickPose to solve the problem, which enables real-time motion capture in crowded scenes. Experiments show that the proposed algorithm achieves the state-of-the-art performance in terms of both speed and accuracy on public datasets.},
-  booktitle = {ACM SIGGRAPH 2022 Conference Proceedings},
+  booktitle = {SIGGRAPH Conference Proceedings},
   articleno = {45},
   numpages = {9},
   keywords = {human pose estimation, quickshift, multi-person, multi-view},
+  bibtex_show={true},
   location = {Vancouver, BC, Canada},
   series = {SIGGRAPH '22}
 }
@@ -58,12 +60,24 @@ Multi-view Videos},
   author={Lin Haotong and Peng Sida and Xu Zhen and Yan Yunzhi and Shuai Qing and Bao Hujun and Zhou Xiaowei},
   bibtex_show={true},
   booktitle={SIGGRAPH Asia Conference Proceedings},
-  year={2022}
+  year={2022},
+  preview={https://xzhou.me/videos/enerf.png},
+
+}
+
+@inproceedings{huang2022hhor,
+  title={Reconstructing Hand-Held Objects from Monocular Video},
+  author={Huang, Di and Ji, Xiaopeng and He, Xingyi and Sun, Jiaming and He, Tong and Shuai Qing and Ouyang, Wanli and Zhou, Xiaowei},
+  booktitle={SIGGRAPH Asia Conference Proceedings},
+  bibtex_show={true},
+  year={2022},
+  code={https://dihuangdh.github.io/hhor/},
+  preview={https://xzhou.me/videos/handscanner.png}
 }
 
 @inproceedings{fang2021mirrored,
   title={Reconstructing 3D Human Pose by Watching Humans in the Mirror},
-  author={Fang Qi and Shuai Qing and Dong Junting and Bao Hujun and Zhou Xiaowei},
+  author={Fang Qi and Shuai* Qing and Dong Junting and Bao Hujun and Zhou Xiaowei},
   booktitle={CVPR},
   bibtex_show={true},
   year={2021},
@@ -74,19 +88,68 @@ Multi-view Videos},
 @inproceedings{peng2021animatable,
   title={Animatable neural radiance fields for modeling dynamic human bodies},
   author={Peng Sida and Dong Junting and Wang Qianqian and Zhang Shangzhan and Shuai Qing and Zhou Xiaowei and Bao Hujun},
-  booktitle={Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  booktitle={ICCV},
   bibtex_show={true},
   pages={14314--14323},
-  year={2021}
+  year={2021},
+  preview={https://xzhou.me/videos/animatable_nerf.mp4}
 }
 
 @ARTICLE{9419782, 
   author={Chen Linghao and Sun Jiaming and Xie Yiming and Zhang Siyu and Shuai Qing and Jiang Qinhong and Zhang Guofeng and Bao Hujun and Zhou Xiaowei},
-  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  journal={TPAMI},
   title={Shape Prior Guided Instance Disparity Estimation for 3D Object Detection},
   year={2022},
   volume={44},
+  bibtex_show={true},
   number={9},
   pages={5529-5540},
   doi={10.1109/TPAMI.2021.3076678}
+}
+
+@article{peng2023implicit,
+  title={Implicit Neural Representations with Structured Latent Codes for Human Body Modeling},
+  author={Peng, Sida and Geng, Chen and Zhang, Yuanqing and Xu, Yinghao and Wang, Qianqian and Shuai, Qing and Zhou, Xiaowei and Bao, Hujun},
+  journal={TPAMI},
+  year={2023},
+  bibtex_show={true},
+  publisher={IEEE},
+  preview = {http://pengsida.net/images/neuralbody_pami.png}
+}
+
+@InProceedings{Peng_2023_CVPR,
+    author    = {Peng, Sida and Yan, Yunzhi and Shuai, Qing and Bao, Hujun and Zhou, Xiaowei},
+    title     = {Representing Volumetric Videos As Dynamic MLP Maps},
+    booktitle = {CVPR},
+    month     = {June},
+    year      = {2023},
+    bibtex_show={true},
+    pages     = {4252-4262},
+    preview   = {http://pengsida.net/images/mlp_maps.png}
+}
+
+@InProceedings{Fang_2023_CVPR,
+    author    = {Fang, Qi and Chen, Kang and Fan, Yinghui and Shuai, Qing and Li, Jiefeng and Zhang, Weidong},
+    title     = {Learning Analytical Posterior Probability for Human Mesh Recovery},
+    booktitle = {CVPR},
+    month     = {June},
+    bibtex_show={true},
+    year      = {2023},
+    pages     = {8781-8791},
+    code      ={https://netease-gameai.github.io/ProPose/},
+    preview   = {https://netease-gameai.github.io/ProPose/static/assets/hmr.mp4}
+}
+
+@inproceedings{NEURIPS2022_589c5bd0,
+ author = {Dong, Junting and Fang, Qi and Guo, Yudong and Peng, Sida and Shuai, Qing and Zhou, Xiaowei and Bao, Hujun},
+ booktitle = {NeurIPS},
+ editor = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
+ pages = {13654--13667},
+ publisher = {Curran Associates, Inc.},
+ title = {TotalSelfScan: Learning Full-body Avatars from Self-Portrait Videos of Faces, Hands, and Bodies},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2022/file/589c5bd0aa4322e37813e8e41ddf8034-Paper-Conference.pdf},
+  bibtex_show={true},
+ volume = {35},
+ year = {2022},
+ preview = {http://pengsida.net/images/totalselfscan.png}
 }

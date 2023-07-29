@@ -495,7 +495,7 @@ footer.sticky-bottom {
       margin-bottom: 1rem;
       .preview {
         width: 100%;
-        flex-grow: 2;
+        // flex-grow: 2;
         min-width: 80px;
         max-width: 200px;
         display: flex;
@@ -715,3 +715,40 @@ progress {
      display: block;
      height: inherit;
  }
+
+
+//  video
+.video-container {
+  position: relative;
+  z-index: 1;
+  transition: width 5s ease; /* 添加过渡效果 */
+}
+
+.video-container video {
+  width: 100%;
+  height: auto; /* 根据视频比例自适应高度 */
+}
+
+.video-container:hover {
+  width: 150%; /* 鼠标悬停时的宽度，两倍于初始宽度 */
+  z-index: 9999;
+  transform: translate(-16.25%, -16.25%);
+}
+
+.video-container-left {
+  float: left;
+}
+
+.video-container-left:hover {
+  width: 150%; /* 鼠标悬停时的宽度，两倍于初始宽度 */
+  transform: translate(0%, -16.25%);
+}
+
+.video-container-right {
+  float: right;
+}
+
+.video-container-right:hover {
+  width: 150%; /* 鼠标悬停时的宽度，两倍于初始宽度 */
+  transform: translate(0%, -16.25%);
+}
