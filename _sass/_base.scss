@@ -731,8 +731,10 @@ progress {
 
 .video-container:hover {
   z-index: 9999;
-  -webkit-transform: scale(1.5) translate(-16.25%, -16.25%);
-  transform: scale(1.5) translate(-16.25%, -16.25%);
+  -webkit-width: 150%;
+  width: 150%;
+  -webkit-transform: translate(-16.25%, -16.25%);
+  transform: translate(-16.25%, -16.25%);
 }
 
 .video-container-left {
@@ -740,8 +742,10 @@ progress {
 }
 
 .video-container-left:hover {
-  -webkit-transform: scale(1.5) translate(-16.25%, -16.25%);
-  transform: scale(1.5) translate(0%, -16.25%);
+  -webkit-width: 150%;
+  width: 150%;
+  -webkit-transform: translate(0%, -16.25%);
+  transform: translate(0%, -16.25%) ;
 }
 
 .video-container-right {
@@ -749,6 +753,8 @@ progress {
 }
 
 .video-container-right:hover {
-  -webkit-transform: scale(1.5) translate(-16.25%, -16.25%);
-  transform: scale(1.5) translate(0%, -16.25%);
+  -webkit-width: 150%;
+  width: 150%;
+  -webkit-transform: translate(0%, -16.25%);
+  transform: translate(0%, -16.25%);
 }
