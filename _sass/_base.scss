@@ -721,7 +721,11 @@ progress {
 .video-container {
   position: relative;
   z-index: 1;
-  transition: width 5s ease; /* 添加过渡效果 */
+  // transition: width 0.5s ease; /* 添加过渡效果 */
+  -webkit-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+  -webkit-transition-property: box-shadow, width, transform;
+  transition-property: box-shadow, width, transform;
 }
 
 .video-container video {
@@ -731,6 +735,7 @@ progress {
 
 .video-container:hover {
   z-index: 9999;
+  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
   -webkit-width: 150%;
   width: 150%;
   -webkit-transform: translate(-16.25%, -16.25%);
@@ -742,6 +747,7 @@ progress {
 }
 
 .video-container-left:hover {
+  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
   -webkit-width: 150%;
   width: 150%;
   -webkit-transform: translate(0%, -16.25%);
@@ -753,6 +759,7 @@ progress {
 }
 
 .video-container-right:hover {
+  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
   -webkit-width: 150%;
   width: 150%;
   -webkit-transform: translate(0%, -16.25%);
