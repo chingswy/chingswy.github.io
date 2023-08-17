@@ -1,6 +1,0 @@
-pergamo:
-  title: "PERGAMO: Personalized 3D Garments from Monocular Video"
-  keywords: human, monocular, garments
-  figure: 2
-  code: https://github.com/AndresCasado/pergamo
-  Qing: 单目多个阶段获取特征
