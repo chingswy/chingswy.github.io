@@ -16,7 +16,7 @@ profile:
 
 news: false  # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
-years: [2023, 2022, 2021, 2020]
+years: [2024, 2023, 2022, 2021, 2020]
 social: true  # includes social icons at the bottom of the page
 ---
 
@@ -32,7 +32,7 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
 
 ## Demos
 
-## Professional Motion Capture from Multiple Camera System
+#### Professional Motion Capture with Multi-Camera Systems
 
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
@@ -43,7 +43,7 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
     </div>
 </div>
 
-## Easy Motion Capture from Complex Internet Videos
+#### Simple Motion Capture from Complex Internet Videos
 
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
@@ -57,7 +57,7 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
     </div>
 </div>
 
-## Novel View Synthesis
+#### Novel View Synthesis
 
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
@@ -71,7 +71,7 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
     </div>
 </div>
 
-## 4D Scene Reconstruction and Editing
+#### 4D Scene Reconstruction and Editing
 
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
