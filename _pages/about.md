@@ -20,7 +20,7 @@ years: [2023, 2022, 2021, 2020]
 social: true  # includes social icons at the bottom of the page
 ---
 
-I am a Ph.D. student (2019-) in Computer Science at [Zhejiang University](http://www.zju.edu.cn/english/), supervised by [Xiaowei Zhou](http://xzhou.me). My research interest lies at the intersection of computer vision and computer graphics. I am particularly excited about 3D human pose estimation and reconstruction, novel view synthesis, and differentiable rendering problems.
+I am currently working at Tencent (2024.7-), where my focus is on human motion capture and generation under multimodal inputs. Prior to this, I was a Ph.D. student in Computer Science at [Zhejiang University](http://www.zju.edu.cn/english/) from 2019 to 2024, under the supervision of [Xiaowei Zhou](http://xzhou.me). My research interests lie at the intersection of computer vision and computer graphics, with a particular emphasis on 3D human pose estimation and generation, 3D reconstruction, and novel view synthesis.
 
 During my past career, my main focus was on the [EasyMoCap](https://github.com/zju3dv/EasyMocap/) repository. The goal of this repository is to **make human motion capture more accessible and straightforward**. It encompasses a collection of code from my work over the past few years and includes essential tools for the field of human motion capture, such as camera calibration, interactive keypoint annotation, visualization, and more.
 
@@ -32,6 +32,8 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
 
 ## Demos
 
+## Professional Motion Capture from Multiple Camera System
+
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
         {% include video.html path="assets/mocap/02_fitsmpl_output.mp4" position="left" %}
@@ -40,6 +42,8 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
         {% include video.html path="assets/mocap/04_ballet.mp4" position="right"  %}
     </div>
 </div>
+
+## Easy Motion Capture from Complex Internet Videos
 
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
@@ -53,6 +57,8 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
     </div>
 </div>
 
+## Novel View Synthesis
+
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
         {% include video.html path="assets/multinb/demo_soccer1-6.mp4" position="left" %}
@@ -64,6 +70,9 @@ During my past career, my main focus was on the [EasyMoCap](https://github.com/z
         {% include video.html path="assets/multinb/demo_soccer1-yuang.mp4" position="right"  %}
     </div>
 </div>
+
+## 4D Scene Reconstruction and Editing
+
 <div class="row">
     <div class="col-sm mt-0 mt-md-0">
         {% include video.html path="assets/multinb/demo_boxing2.mp4" position="left" %}
