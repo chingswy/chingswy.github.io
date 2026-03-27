@@ -6,7 +6,8 @@ permalink: /
 
 profile:
   align: right
-  address: "https://sketchfab.com/models/b0fb28cf0fed4a1d8a696b5152ca775c/embed"
+  viewer3d: true
+  # address: "https://sketchfab.com/models/b0fb28cf0fed4a1d8a696b5152ca775c/embed"
   # image: prof_pic.jpg
   # image_circular: false # crops the image to make it circular
   # address: >
