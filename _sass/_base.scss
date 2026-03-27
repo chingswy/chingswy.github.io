@@ -149,9 +149,6 @@ blockquote {
   backdrop-filter: saturate(180%) blur(20px);
 }
 
-html[data-theme='dark'] .navbar {
-  background-color: rgba(29, 29, 31, 0.72);
-}
 .navbar .dropdown-menu {
   background-color: var(--global-bg-color);
   border: 1px solid var(--global-divider-color);
