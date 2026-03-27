@@ -22,14 +22,14 @@ nav_order: 3
 
 {% if site.data.repositories.github_repos %}
 <div class="repositories d-flex flex-wrap flex-md-row flex-column justify-content-between align-items-center">
-  {% for repo in site.data.repositories.github_repos %}
-    {% include repository/repo.html repository=repo %}
+  {% for item in site.data.repositories.github_repos %}
+    {% include repository/repo.html repository=item.repo stars=item.stars %}
   {% endfor %}
 </div>
 {% endif %}
 
 ## Star History
 
-{% for repo in site.data.repositories.github_repos %}
-[![Star History Chart](https://api.star-history.com/svg?repos={{repo}}&type=Date)](https://star-history.com/#{{repo}}&Date)
+{% for item in site.data.repositories.github_repos %}
+[![Star History Chart](https://api.star-history.com/svg?repos={{item.repo}}&type=Date)](https://star-history.com/#{{item.repo}}&Date)
 {% endfor %}

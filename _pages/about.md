@@ -16,7 +16,7 @@ profile:
 
 news: false  # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
-years: [2024, 2023, 2022, 2021, 2020]
+years: [2026, 2025, 2024, 2023, 2022, 2021, 2020]
 social: true  # includes social icons at the bottom of the page
 ---
 
@@ -24,9 +24,9 @@ I am currently working at Tencent (2024.7-), where my focus is on human motion c
 
 During my past career, my main focus was on the [EasyMoCap](https://github.com/zju3dv/EasyMocap/) repository. The goal of this repository is to **make human motion capture more accessible and straightforward**. It encompasses a collection of code from my work over the past few years and includes essential tools for the field of human motion capture, such as camera calibration, interactive keypoint annotation, visualization, and more.
 
-<div class="repositories" align="center">
-  {% for repo in site.data.repositories.github_repos %}
-    {% include repository/repo.html repository=repo %}
+<div class="repositories d-flex flex-wrap">
+  {% for item in site.data.repositories.github_repos %}
+    {% include repository/repo.html repository=item.repo stars=item.stars %}
   {% endfor %}
 </div>
 

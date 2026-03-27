@@ -60,10 +60,15 @@ blockquote {
   text-align: center;
 }
 
-// Card
+// Card — glass effect
 
 .card {
   background-color: var(--global-card-bg-color);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
 
   img {
     width: 100%;
@@ -134,13 +139,18 @@ blockquote {
 }
 
 
-// Navbar customization
+// Navbar customization — Apple frosted glass
 
 .navbar {
   box-shadow: none;
   border-bottom: 1px solid var(--global-divider-color);
-  background-color: var(--global-bg-color);
-  opacity: 0.95;
+  background-color: rgba(245, 245, 247, 0.72);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+html[data-theme='dark'] .navbar {
+  background-color: rgba(29, 29, 31, 0.72);
 }
 .navbar .dropdown-menu {
   background-color: var(--global-bg-color);
@@ -178,7 +188,9 @@ blockquote {
     }
   }
   .navbar-nav .nav-item.active>.nav-link {
-      background-color: inherit;
+      background-color: rgba(255,255,255,0.6);
+      border-radius: 8px;
+      padding: 4px 12px;
       font-weight: bolder;
       color: var(--global-theme-color);
       &:hover {
@@ -275,6 +287,7 @@ blockquote {
 // Footer
 footer.fixed-bottom {
   background-color: var(--global-footer-bg-color);
+  border-top: 1px solid var(--global-divider-color);
   font-size: 0.75rem;
   .container {
     color: var(--global-footer-text-color);
@@ -320,10 +333,53 @@ footer.sticky-bottom {
 
 // Repositories
 
-@media (min-width: 768px) {
+.repo {
+  width: 50%;
+  max-width: 50%;
+  flex: 0 0 50%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
   .repo {
-    max-width: 50%;
+    width: 100%;
+    max-width: 100%;
+    flex: 0 0 100%;
   }
+}
+
+.repo-card-box {
+  background-color: var(--global-card-bg-color);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  transition: transform 0.2s, box-shadow 0.2s;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
+  }
+}
+
+.repo-card-title {
+  font-size: 1rem;
+  color: var(--global-text-color);
+  margin-bottom: 8px;
+}
+
+.repo-card-stars {
+  font-size: 0.85rem;
+  color: var(--global-text-color);
+  opacity: 0.5;
+}
+
+.repo-card-owner {
+  font-size: 0.8rem;
+  color: var(--global-text-color);
+  opacity: 0.4;
 }
 
 // Blog
@@ -720,48 +776,17 @@ progress {
 //  video
 .video-container {
   position: relative;
-  z-index: 1;
-  // transition: width 0.5s ease; /* 添加过渡效果 */
-  -webkit-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-property: box-shadow, width, transform;
-  transition-property: box-shadow, width, transform;
 }
 
 .video-container video {
   width: 100%;
-  height: auto; /* 根据视频比例自适应高度 */
-}
-
-.video-container:hover {
-  z-index: 9999;
-  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
-  -webkit-width: 150%;
-  width: 150%;
-  -webkit-transform: translate(-16.25%, -16.25%);
-  transform: translate(-16.25%, -16.25%);
+  height: auto;
 }
 
 .video-container-left {
   float: left;
 }
 
-.video-container-left:hover {
-  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
-  -webkit-width: 150%;
-  width: 150%;
-  -webkit-transform: translate(0%, -16.25%);
-  transform: translate(0%, -16.25%) ;
-}
-
 .video-container-right {
   float: right;
-}
-
-.video-container-right:hover {
-  box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.5);
-  -webkit-width: 150%;
-  width: 150%;
-  -webkit-transform: translate(0%, -16.25%);
-  transform: translate(0%, -16.25%);
 }

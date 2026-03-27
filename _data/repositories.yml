@@ -2,6 +2,11 @@ github_users:
   - chingswy
 
 github_repos:
-  - zju3dv/EasyMocap
-  - zju3dv/EasyVolcap
-  - zju3dv/LoG
+  - repo: zju3dv/EasyMocap
+    stars: 4.5k
+  - repo: Tencent-Hunyuan/HY-Motion-1.0
+    stars: 2.2k
+  - repo: zju3dv/EasyVolcap
+    stars: 1.5k
+  - repo: zju3dv/LoG
+    stars: 762
