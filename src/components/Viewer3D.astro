@@ -143,9 +143,13 @@ const { src = "/qing-202206.glb", size = 300, hint = "Drag to view" } = Astro.pr
         scene.add(model);
         controls.target.set(0, ((size.y * scale) / 2) * 0.6, 0);
         controls.update();
+        window.dispatchEvent(new CustomEvent("viewer3d:ready"));
       },
       undefined,
-      (err: any) => console.error("[viewer3d] failed to load", err),
+      (err: any) => {
+        console.error("[viewer3d] failed to load", err);
+        window.dispatchEvent(new CustomEvent("viewer3d:ready"));
+      },
     );
 
     let rafId = 0;
