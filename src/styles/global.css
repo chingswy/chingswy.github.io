@@ -1,0 +1,291 @@
+@import "tailwindcss";
+
+/* -----------------------------------------------------------------
+   Design tokens — Apple-adjacent, quiet, deep-blue accent
+   ----------------------------------------------------------------- */
+@theme {
+  --font-serif: "Newsreader", "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Inter", -apple-system, "Helvetica Neue", "PingFang SC", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  --color-ink: #1c1c1e;
+  --color-ink-soft: #48484a;
+  --color-ink-mute: #8e8e93;
+  --color-paper: #fbfaf7;
+  --color-paper-soft: #f3f2ee;
+  --color-rule: #e8e6df;
+  --color-accent: #3d5a80;
+}
+
+:root {
+  --bg: var(--color-paper);
+  --bg-soft: var(--color-paper-soft);
+  --fg: var(--color-ink);
+  --fg-soft: var(--color-ink-soft);
+  --fg-mute: var(--color-ink-mute);
+  --rule: var(--color-rule);
+  --accent: var(--color-accent);
+
+  --w-page: 1180px;
+  --deck-duration: 620ms;
+  --deck-ease: cubic-bezier(0.32, 0.72, 0, 1);
+
+  color-scheme: light;
+}
+
+:root.dark {
+  --bg: #101014;
+  --bg-soft: #17171c;
+  --fg: #ececef;
+  --fg-soft: #b6b6bc;
+  --fg-mute: #8a8a92;
+  --rule: #2b2b31;
+  --accent: #98b6dc;
+  color-scheme: dark;
+}
+
+/* -----------------------------------------------------------------
+   Base
+   ----------------------------------------------------------------- */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html {
+  font-family: var(--font-serif);
+  font-feature-settings: "kern", "liga", "onum";
+  background: var(--bg);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-size: 18px;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+  transition: background 620ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 1px;
+  transition: color 200ms, border-color 200ms;
+}
+a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.meta {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--fg-mute);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* -----------------------------------------------------------------
+   Deck — crossfade page turns (Keynote Dissolve style)
+   ----------------------------------------------------------------- */
+.deck {
+  position: fixed;
+  inset: 0;
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 5rem 2rem;
+
+  /* Off-state: sitting behind, slightly lifted, invisible */
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    opacity var(--deck-duration) var(--deck-ease),
+    transform var(--deck-duration) var(--deck-ease),
+    visibility 0s linear var(--deck-duration);
+}
+.page.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+  z-index: 2;
+  transition:
+    opacity var(--deck-duration) var(--deck-ease),
+    transform var(--deck-duration) var(--deck-ease),
+    visibility 0s linear 0s;
+}
+/* The outgoing page needs to stay visible during its fade-out */
+.page.is-leaving {
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: visible;
+  z-index: 1;
+  pointer-events: none;
+  transition:
+    opacity var(--deck-duration) var(--deck-ease),
+    transform var(--deck-duration) var(--deck-ease),
+    visibility 0s linear var(--deck-duration);
+}
+
+/* Scrollable long-content page: content scrolls inside */
+.page.scrollable { overflow-y: auto; align-items: flex-start; padding-top: 6rem; }
+.page.scrollable::-webkit-scrollbar { width: 6px; }
+.page.scrollable::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--fg-mute) 40%, transparent);
+  border-radius: 3px;
+}
+.page.scrollable::-webkit-scrollbar-track { background: transparent; }
+
+.page-inner {
+  width: 100%;
+  max-width: var(--w-page);
+  margin-inline: auto;
+}
+
+/* Content stagger — the eye's focal point during the fade */
+.page > .page-inner > * {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 600ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 600ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.page.is-active > .page-inner > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.page.is-active > .page-inner > *:nth-child(1) { transition-delay: 120ms; }
+.page.is-active > .page-inner > *:nth-child(2) { transition-delay: 200ms; }
+.page.is-active > .page-inner > *:nth-child(3) { transition-delay: 260ms; }
+.page.is-active > .page-inner > *:nth-child(n+4) { transition-delay: 300ms; }
+
+/* Hero has a two-column inner — animate the columns */
+.page.hero > .page-inner > * { opacity: 1; transform: none; }
+.page.hero .hero-portrait,
+.page.hero .hero-copy {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 700ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 700ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.page.hero.is-active .hero-portrait { opacity: 1; transform: none; transition-delay: 100ms; }
+.page.hero.is-active .hero-copy     { opacity: 1; transform: none; transition-delay: 240ms; }
+
+/* Section head shared */
+.section-head { margin-bottom: 3rem; }
+.section-head h2 {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 500;
+}
+.section-head .lede {
+  color: var(--fg-soft);
+  margin-top: 0.75rem;
+  max-width: 44rem;
+  font-size: 1rem;
+}
+
+@media (max-width: 720px) {
+  .page { padding: 4rem 1.25rem; }
+  .page.scrollable { padding-top: 5rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page,
+  .page.is-active,
+  .page.is-leaving,
+  .page > .page-inner > *,
+  .page.hero .hero-portrait,
+  .page.hero .hero-copy {
+    transition: opacity 220ms linear !important;
+    transform: none !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* -----------------------------------------------------------------
+   Deck controls — pagination dots (subtle, right side)
+   ----------------------------------------------------------------- */
+.deck-nav {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.deck-nav button {
+  width: 6px;
+  height: 6px;
+  border: none;
+  border-radius: 50%;
+  background: var(--fg-mute);
+  opacity: 0.4;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 250ms, transform 250ms, background 250ms;
+}
+.deck-nav button:hover { opacity: 0.85; }
+.deck-nav button[data-active="true"] {
+  opacity: 1;
+  background: var(--fg);
+  transform: scale(1.4);
+}
+
+@media (max-width: 640px) {
+  .deck-nav { right: 0.75rem; gap: 0.55rem; }
+}
+
+/* -----------------------------------------------------------------
+   Theme toggle FAB
+   ----------------------------------------------------------------- */
+.theme-fab {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--fg-mute);
+  font-size: 15px;
+  cursor: pointer;
+  transition: color 200ms, transform 300ms;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-fab:hover { color: var(--accent); }
+.icon-dark { display: none; }
+:root.dark .icon-light { display: none; }
+:root.dark .icon-dark { display: inline; }

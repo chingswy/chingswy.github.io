@@ -1,0 +1,213 @@
+---
+export interface Props {
+  src?: string;
+  size?: number;
+  hint?: string;
+}
+const { src = "/qing-202206.glb", size = 300, hint = "Drag to view" } = Astro.props;
+---
+
+<div class="viewer3d-wrap" style={`--viewer-size: ${size}px;`}>
+  <div
+    class="viewer3d"
+    data-src={src}
+    aria-label={hint}
+  >
+    <div class="viewer3d-canvas"></div>
+    <div class="viewer3d-fallback" aria-hidden="true"></div>
+    <span class="viewer3d-hint" aria-hidden="true">{hint}</span>
+  </div>
+</div>
+
+<style>
+  .viewer3d-wrap {
+    display: flex;
+    justify-content: center;
+  }
+  .viewer3d {
+    position: relative;
+    width: var(--viewer-size);
+    height: var(--viewer-size);
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    cursor: grab;
+  }
+  .viewer3d:active { cursor: grabbing; }
+  .viewer3d-canvas,
+  .viewer3d-fallback {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .viewer3d-canvas { z-index: 2; }
+  .viewer3d-canvas canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .viewer3d-fallback {
+    z-index: 1;
+    background:
+      radial-gradient(
+        circle at 35% 30%,
+        color-mix(in oklab, var(--accent) 18%, transparent) 0%,
+        transparent 60%
+      ),
+      var(--bg);
+  }
+  .viewer3d-hint {
+    position: absolute;
+    left: 50%;
+    bottom: -1.75rem;
+    transform: translateX(-50%);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    opacity: 0;
+    transition: opacity 300ms ease;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .viewer3d:hover .viewer3d-hint { opacity: 1; }
+</style>
+
+<script>
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+  import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+  interface ViewerInstance {
+    dispose: () => void;
+  }
+
+  function initViewer(root: HTMLElement): ViewerInstance | null {
+    const canvasHost = root.querySelector<HTMLElement>(".viewer3d-canvas");
+    if (!canvasHost) return null;
+
+    const src = root.dataset.src || "/qing-202206.glb";
+    let width = root.clientWidth;
+    let height = root.clientHeight;
+    if (!width || !height) return null;
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
+    camera.position.set(0, 1.0, 2.6);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    canvasHost.appendChild(renderer.domElement);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambient);
+    const key = new THREE.DirectionalLight(0xffffff, 1.15);
+    key.position.set(3, 5, 3);
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xffe6cc, 0.45);
+    fill.position.set(-3, 2, -3);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffffff, 0.35);
+    rim.position.set(0, 3, -4);
+    scene.add(rim);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.8;
+    controls.enableZoom = false;
+    controls.enablePan = false;
+    controls.minPolarAngle = Math.PI / 3.3;
+    controls.maxPolarAngle = Math.PI / 1.9;
+
+    const loader = new GLTFLoader();
+    loader.load(
+      src,
+      (gltf: any) => {
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 1.8 / maxDim;
+        model.scale.setScalar(scale);
+        model.position.sub(center.multiplyScalar(scale));
+        model.position.y += size.y * scale * 0.15;
+        scene.add(model);
+        controls.target.set(0, ((size.y * scale) / 2) * 0.6, 0);
+        controls.update();
+      },
+      undefined,
+      (err: any) => console.error("[viewer3d] failed to load", err),
+    );
+
+    let rafId = 0;
+    const tick = () => {
+      rafId = requestAnimationFrame(tick);
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    tick();
+
+    const onResize = () => {
+      const w = root.clientWidth;
+      const h = root.clientHeight;
+      if (!w || !h) return;
+      width = w;
+      height = h;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+    window.addEventListener("resize", onResize);
+
+    return {
+      dispose() {
+        cancelAnimationFrame(rafId);
+        window.removeEventListener("resize", onResize);
+        controls.dispose();
+        renderer.dispose();
+        renderer.domElement.remove();
+        scene.traverse((obj: any) => {
+          if (obj.geometry) obj.geometry.dispose?.();
+          if (obj.material) {
+            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+            for (const m of mats) m.dispose?.();
+          }
+        });
+      },
+    };
+  }
+
+  const instances = new WeakMap<HTMLElement, ViewerInstance>();
+
+  function mountAll() {
+    document.querySelectorAll<HTMLElement>(".viewer3d").forEach((el) => {
+      if (instances.has(el)) return;
+      const inst = initViewer(el);
+      if (inst) instances.set(el, inst);
+    });
+  }
+
+  function unmountAll() {
+    document.querySelectorAll<HTMLElement>(".viewer3d").forEach((el) => {
+      const inst = instances.get(el);
+      if (inst) {
+        inst.dispose();
+        instances.delete(el);
+      }
+    });
+  }
+
+  mountAll();
+  // View Transitions lifecycle
+  document.addEventListener("astro:before-swap", unmountAll);
+  document.addEventListener("astro:page-load", mountAll);
+</script>

@@ -1,0 +1,7 @@
+I am a researcher in **computer vision**, with a focus on the multimodal understanding and generation of 3D content. My work spans reconstruction, animation, and generation of humans and scenes, with an emphasis on bringing these capabilities from research prototypes to real applications.
+
+Since 2024, I have been a **Senior Researcher** at [Tencent Hunyuan](https://hunyuan.tencent.com/), where I work on production-grade 3D human motion generation, conditioned on a range of modalities including text, audio, and video. One recent output from this line of work is [HY-Motion](https://github.com/Tencent-Hunyuan/HY-Motion-1.0).
+
+I received my BSc from [Zhejiang University](http://www.zju.edu.cn/english/) in 2019 and my PhD from the same institution in 2024, advised by [Prof. Xiaowei Zhou](http://xzhou.me). During my doctorate I led the development of [EasyMocap](https://github.com/zju3dv/EasyMocap), an open-source system for markerless motion capture from multi-view video, and published on neural rendering and free-viewpoint video of interacting people.
+
+I have been particularly excited by recent progress in **LLMs and agents** — AI is evolving from a chatbot into a system that can invoke tools and interact with a computer, and increasingly *observe, reason, and act* the way a person does. I am interested in equipping such agents with multimodal understanding and generation capabilities, and, more broadly, in how AI can genuinely engage with the physical world.

@@ -1,0 +1,231 @@
+---
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Qing Shuai · 帅青",
+  description = "Researcher working on 3D human motion capture, reconstruction, and generation.",
+} = Astro.props;
+
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Inter:wght@400;500;600&display=swap"
+    />
+    <title>{title}</title>
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const dark = stored === "dark" || (!stored && prefersDark);
+        if (dark) document.documentElement.classList.add("dark");
+      })();
+    </script>
+  </head>
+  <body>
+    <button id="theme-toggle" class="theme-fab" aria-label="Toggle theme">
+      <span class="icon-light">☾</span>
+      <span class="icon-dark">☼</span>
+    </button>
+
+    <div id="deck" class="deck">
+      <slot />
+    </div>
+
+    <nav id="deck-nav" class="deck-nav" aria-label="Page navigation"></nav>
+
+    <script>
+      // ---------- Theme toggle ----------
+      const themeBtn = document.getElementById("theme-toggle");
+      themeBtn?.addEventListener("click", () => {
+        const dark = document.documentElement.classList.toggle("dark");
+        localStorage.setItem("theme", dark ? "dark" : "light");
+      });
+
+      // ---------- Deck controller ----------
+      const deck = document.getElementById("deck") as HTMLElement | null;
+      const navHost = document.getElementById("deck-nav") as HTMLElement | null;
+      if (!deck || !navHost) throw new Error("deck missing");
+
+      const pages = Array.from(deck.querySelectorAll<HTMLElement>(".page"));
+      let current = 0;
+      let animating = false;
+      let wheelLock = 0;      // accumulator to require a decisive gesture
+      let wheelResetTimer = 0;
+
+      // Build pagination dots
+      pages.forEach((p, i) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute(
+          "aria-label",
+          `Go to page ${i + 1}` + (p.dataset.title ? ` · ${p.dataset.title}` : "")
+        );
+        b.addEventListener("click", () => goTo(i));
+        navHost.appendChild(b);
+      });
+      const dots = Array.from(navHost.querySelectorAll<HTMLButtonElement>("button"));
+
+      function updateDots() {
+        dots.forEach((d, i) => (d.dataset.active = String(i === current)));
+      }
+
+      function goTo(index: number) {
+        if (animating) return;
+        const clamped = Math.max(0, Math.min(pages.length - 1, index));
+        if (clamped === current) return;
+
+        const prev = current;
+        current = clamped;
+        animating = true;
+
+        // Mark outgoing page as leaving, and incoming page as active.
+        pages[prev].classList.remove("is-active");
+        pages[prev].classList.add("is-leaving");
+        pages[current].classList.remove("is-leaving");
+        pages[current].classList.add("is-active");
+
+        // Always land at the top of the arriving page if it scrolls internally.
+        // Also reset the leaving page's scroll so a return visit starts fresh.
+        if (pages[current].classList.contains("scrollable")) {
+          pages[current].scrollTop = 0;
+        }
+        if (pages[prev].classList.contains("scrollable")) {
+          pages[prev].scrollTop = 0;
+        }
+
+        const id = pages[current].id;
+        if (id) history.replaceState(null, "", `#${id}`);
+
+        updateDots();
+
+        window.setTimeout(() => {
+          pages[prev].classList.remove("is-leaving");
+          animating = false;
+        }, 620);
+      }
+
+      // Initial state
+      pages.forEach((p, i) => p.classList.toggle("is-active", i === current));
+      // Ensure any scrollable pages start at top on first render too.
+      pages.forEach((p) => {
+        if (p.classList.contains("scrollable")) p.scrollTop = 0;
+      });
+      updateDots();
+
+      // If URL has a hash targeting a page, start there without animation.
+      if (location.hash) {
+        const idx = pages.findIndex((p) => "#" + p.id === location.hash);
+        if (idx > 0) {
+          current = idx;
+          pages.forEach((p, i) => p.classList.toggle("is-active", i === current));
+          updateDots();
+        }
+      }
+
+      // ---------- Scrollable-page detection ----------
+      // Advance to the next/prev page only when the inner scroll has reached
+      // its edge (so long content — Publications — can scroll internally).
+      function pageAtEdge(dir: 1 | -1): boolean {
+        const page = pages[current];
+        if (!page.classList.contains("scrollable")) return true;
+        if (dir === 1) {
+          return page.scrollTop + page.clientHeight >= page.scrollHeight - 1;
+        } else {
+          return page.scrollTop <= 0;
+        }
+      }
+
+      // ---------- Wheel handler ----------
+      // We DON'T flip immediately on a tiny movement. Instead, accumulate
+      // deltaY and only advance when it clears a threshold — this makes
+      // trackpad inertia feel deliberate instead of flippy.
+      const WHEEL_THRESHOLD = 40;
+
+      window.addEventListener(
+        "wheel",
+        (e: WheelEvent) => {
+          // During a deck animation, kill ALL wheel input so trailing inertia
+          // from the trackpad doesn't accidentally scroll the arriving page
+          // (this was making Publications land at its bottom).
+          if (animating) {
+            e.preventDefault();
+            wheelLock = 0;
+            return;
+          }
+
+          const dir = e.deltaY > 0 ? 1 : -1;
+          if (!pageAtEdge(dir as 1 | -1)) return; // let inner scroll handle it
+          e.preventDefault();
+
+          // Reset accumulator if the user pauses
+          window.clearTimeout(wheelResetTimer);
+          wheelResetTimer = window.setTimeout(() => { wheelLock = 0; }, 180);
+
+          wheelLock += e.deltaY;
+          if (Math.abs(wheelLock) < WHEEL_THRESHOLD) return;
+
+          if (wheelLock > 0) goTo(current + 1);
+          else goTo(current - 1);
+          wheelLock = 0;
+        },
+        { passive: false }
+      );
+
+      // ---------- Keyboard ----------
+      window.addEventListener("keydown", (e) => {
+        if (["ArrowDown", "PageDown", " "].includes(e.key)) {
+          if (pageAtEdge(1)) { e.preventDefault(); goTo(current + 1); }
+        } else if (["ArrowUp", "PageUp"].includes(e.key)) {
+          if (pageAtEdge(-1)) { e.preventDefault(); goTo(current - 1); }
+        } else if (e.key === "Home") {
+          e.preventDefault(); goTo(0);
+        } else if (e.key === "End") {
+          e.preventDefault(); goTo(pages.length - 1);
+        }
+      });
+
+      // ---------- Touch ----------
+      let touchStartY = 0;
+      let touchStartAt = 0;
+      window.addEventListener("touchstart", (e) => {
+        touchStartY = e.touches[0].clientY;
+        touchStartAt = Date.now();
+      }, { passive: true });
+      window.addEventListener("touchend", (e) => {
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        const dt = Date.now() - touchStartAt;
+        if (Math.abs(dy) < 40 || dt > 700) return;
+        const dir = dy < 0 ? 1 : -1;
+        if (!pageAtEdge(dir as 1 | -1)) return;
+        goTo(current + dir);
+      }, { passive: true });
+
+      // ---------- Anchor links ----------
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", (e) => {
+          const hash = a.getAttribute("href");
+          if (!hash || hash === "#") return;
+          const idx = pages.findIndex((p) => "#" + p.id === hash);
+          if (idx >= 0) {
+            e.preventDefault();
+            goTo(idx);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

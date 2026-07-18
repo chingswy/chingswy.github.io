@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+.env
+.env.local
+.vscode/
+
+# 本地 npm 镜像配置不入库，CI 走 npmjs.org 官方源
+.npmrc
