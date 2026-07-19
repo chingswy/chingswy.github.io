@@ -228,7 +228,13 @@ const renderAuthors = (authors: string[]) =>
                 <a href={p.href}>{p.title}</a>
               </h3>
               <p class="proj-subtitle">{p.subtitle}</p>
-              <a class="proj-video" href={p.href} aria-label={`${p.title} on GitHub`}>
+              <button
+                type="button"
+                class="proj-video"
+                data-video={p.video}
+                data-title={p.title}
+                aria-label={`Play ${p.title} preview`}
+              >
                 <video
                   data-src={p.video}
                   muted
@@ -237,7 +243,17 @@ const renderAuthors = (authors: string[]) =>
                   preload="none"
                   aria-hidden="true"
                 />
-              </a>
+                <span class="media-loader" aria-hidden="true">
+                  <span class="media-loader-track"><span class="media-loader-fill"></span></span>
+                  <span class="media-loader-label">Loading</span>
+                </span>
+                <span class="proj-video-cta" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                    <path fill="currentColor" d="M8 5v14l11-7z"/>
+                  </svg>
+                  <span>Click to view</span>
+                </span>
+              </button>
               <p class="proj-story">{p.story}</p>
               <div class="proj-meta-row">
                 <a class="proj-link proj-repo-link" href={p.href}>
@@ -290,22 +306,42 @@ const renderAuthors = (authors: string[]) =>
             <ul class="paper-list">
               {byYear[year].map((p) => (
                 <li class="paper-item">
-                  <div class="paper-preview">
-                    {p.preview && isVideo(p.preview) && (
-                      <video
-                        data-src={p.preview}
-                        muted
-                        loop
-                        playsinline
-                        preload="none"
-                        aria-hidden="true"
-                      />
-                    )}
-                    {p.preview && !isVideo(p.preview) && (
-                      <img data-src={p.preview} alt="" />
-                    )}
-                    {!p.preview && <div class="paper-preview-empty" aria-hidden="true" />}
-                  </div>
+                  {p.preview ? (
+                    <button
+                      type="button"
+                      class="paper-preview paper-preview-btn"
+                      data-media={p.preview}
+                      data-media-type={isVideo(p.preview) ? "video" : "image"}
+                      data-title={p.title}
+                      aria-label={`Open ${p.title} preview`}
+                    >
+                      {isVideo(p.preview) ? (
+                        <video
+                          data-src={p.preview}
+                          muted
+                          loop
+                          playsinline
+                          preload="none"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <img data-src={p.preview} alt="" />
+                      )}
+                      <span class="media-loader" aria-hidden="true">
+                        <span class="media-loader-track"><span class="media-loader-fill"></span></span>
+                        <span class="media-loader-label">Loading</span>
+                      </span>
+                      <span class="paper-preview-cta" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+                          <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7"/>
+                        </svg>
+                      </span>
+                    </button>
+                  ) : (
+                    <div class="paper-preview">
+                      <div class="paper-preview-empty" aria-hidden="true" />
+                    </div>
+                  )}
                   <div class="paper-text">
                     <h3 class="paper-title">{p.title}</h3>
                     <p class="paper-authors" set:html={renderAuthors(p.authors)} />
@@ -335,6 +371,27 @@ const renderAuthors = (authors: string[]) =>
       }
     </div>
   </section>
+
+  {/* ============ VIDEO MODAL ============ */}
+  <div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <button type="button" class="video-modal-backdrop" aria-label="Close"></button>
+    <div class="video-modal-panel" role="document">
+      <button type="button" class="video-modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+      <div class="video-modal-title" id="video-modal-title"></div>
+      <video
+        class="video-modal-video"
+        controls
+        controlsList="nodownload"
+        playsinline
+        preload="metadata"
+      ></video>
+      <img class="video-modal-image" alt="" />
+    </div>
+  </div>
 </Base>
 
 <style>
@@ -471,18 +528,26 @@ const renderAuthors = (authors: string[]) =>
   }
   .proj-video {
     display: block;
-    aspect-ratio: 16 / 10;
+    width: 100%;
+    padding: 0;
+    border: none;
     background: color-mix(in oklab, var(--fg-mute) 8%, transparent);
+    aspect-ratio: 16 / 10;
     overflow: hidden;
     border-radius: 3px;
     margin-bottom: 1.1rem;
-    border-bottom: none;
     position: relative;
-    transition: transform 400ms cubic-bezier(0.32, 0.72, 0, 1),
-                box-shadow 400ms cubic-bezier(0.32, 0.72, 0, 1),
-                z-index 0s 400ms;
-    will-change: transform;
-    z-index: 0;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    transition: box-shadow 300ms ease, transform 300ms ease;
+  }
+  .proj-video:hover {
+    box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.25);
+  }
+  .proj-video:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
   .proj-video video {
     width: 100%;
@@ -490,12 +555,53 @@ const renderAuthors = (authors: string[]) =>
     object-fit: cover;
     display: block;
   }
-  .proj-item:hover .proj-video {
-    transform: scale(1.12);
-    box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.35),
-                0 8px 18px -8px rgba(0, 0, 0, 0.25);
-    z-index: 2;
-    transition-delay: 0s;
+  .proj-video-cta {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    background: rgba(0, 0, 0, 0.32);
+    opacity: 0;
+    transition: opacity 220ms ease, background 220ms ease;
+    pointer-events: none;
+  }
+  .proj-video-cta > svg,
+  .proj-video-cta > span {
+    box-sizing: border-box;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.94);
+    color: #0f1115;
+    transition: background 220ms ease;
+  }
+  .proj-video-cta > svg {
+    width: 34px;
+    padding: 0 0 0 4px;
+    border-radius: 999px 0 0 999px;
+    box-shadow: -6px 0 22px rgba(0, 0, 0, 0.35);
+  }
+  .proj-video-cta > span {
+    padding: 0 0.95rem 0 0.55rem;
+    border-radius: 0 999px 999px 0;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+    box-shadow: 6px 0 22px rgba(0, 0, 0, 0.35);
+  }
+  .proj-video.is-ready .proj-video-cta { opacity: 1; }
+  .proj-video.is-ready:hover .proj-video-cta {
+    background: rgba(0, 0, 0, 0.48);
+  }
+  .proj-video.is-ready:hover .proj-video-cta > svg,
+  .proj-video.is-ready:hover .proj-video-cta > span {
+    background: #fff;
   }
   .proj-title { font-size: 1.25rem; margin-bottom: 0.35rem; font-weight: 500; }
   .proj-title a { border-bottom: none; }
@@ -599,7 +705,41 @@ const renderAuthors = (authors: string[]) =>
     overflow: hidden;
     border-radius: 2px;
     display: flex;
+    position: relative;
   }
+  .paper-preview-btn {
+    padding: 0;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: box-shadow 200ms ease;
+  }
+  .paper-preview-btn:hover {
+    box-shadow: 0 8px 22px -10px rgba(0, 0, 0, 0.35);
+  }
+  .paper-preview-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .paper-preview-cta {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 200ms ease, background 200ms ease;
+    pointer-events: none;
+  }
+  .paper-preview-btn.is-ready .paper-preview-cta { opacity: 1; }
+  .paper-preview-btn.is-ready:hover .paper-preview-cta { background: rgba(0, 0, 0, 0.75); }
   .paper-preview img,
   .paper-preview video {
     width: 100%;
@@ -653,26 +793,266 @@ const renderAuthors = (authors: string[]) =>
     .paper-item { grid-template-columns: 110px 1fr; gap: 1rem; }
     .paper-preview { width: 110px; }
   }
+
+  /* ================ MEDIA LOADER ================ */
+  .media-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background: color-mix(in oklab, var(--bg) 92%, var(--fg-mute) 8%);
+    opacity: 1;
+    transition: opacity 300ms ease;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .media-loader.is-hidden { opacity: 0; }
+  .media-loader-track {
+    position: relative;
+    width: min(60%, 140px);
+    height: 3px;
+    border-radius: 2px;
+    background: color-mix(in oklab, var(--fg-mute) 22%, transparent);
+    overflow: hidden;
+  }
+  .media-loader-fill {
+    position: absolute;
+    inset: 0;
+    right: auto;
+    width: 0%;
+    background: var(--accent);
+    transition: width 220ms ease-out;
+  }
+  .media-loader-label {
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+  }
+  .paper-preview { position: relative; }
+  .paper-preview .media-loader-track { width: min(70%, 110px); }
+  .paper-preview .media-loader-label { font-size: 9.5px; }
+
+  /* ================ VIDEO MODAL ================ */
+  .video-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4vw, 3rem);
+  }
+  .video-modal.is-open {
+    display: flex;
+    animation: modal-fade 220ms ease-out;
+  }
+  @keyframes modal-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .video-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+  }
+  .video-modal-panel {
+    position: relative;
+    width: min(1200px, 92vw);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 1;
+  }
+  .video-modal-title {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.85);
+    padding-right: 3rem;
+  }
+  .video-modal-close {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 200ms ease;
+  }
+  .video-modal-close:hover { background: rgba(255, 255, 255, 0.24); }
+  .video-modal-video,
+  .video-modal-image {
+    width: 100%;
+    max-height: 82vh;
+    background: #000;
+    border-radius: 4px;
+    display: block;
+    object-fit: contain;
+  }
+  .video-modal-image { display: none; background: transparent; }
+  .video-modal[data-kind="image"] .video-modal-video { display: none; }
+  .video-modal[data-kind="image"] .video-modal-image { display: block; }
 </style>
 
 <script>
+  // ---------- Simulated progress bar ----------
+  // The browser doesn't reliably expose "how much of this video/image has
+  // downloaded" until after headers arrive, so we ease a fake bar to ~92%,
+  // then finish it when the media reports ready.
+  function driveLoader(container: HTMLElement, mediaReady: Promise<void>) {
+    const loader = container.querySelector<HTMLElement>(".media-loader");
+    if (!loader) return mediaReady;
+    const fill = loader.querySelector<HTMLElement>(".media-loader-fill");
+    if (!fill) return mediaReady;
+    let progress = 0;
+    let done = false;
+    const step = () => {
+      if (done) return;
+      // Ease toward 92%: fast at first, slow near the top.
+      const gap = 92 - progress;
+      progress += Math.max(0.6, gap * 0.06);
+      if (progress > 92) progress = 92;
+      fill.style.width = `${progress}%`;
+      window.setTimeout(step, 140);
+    };
+    step();
+    return mediaReady.finally(() => {
+      done = true;
+      fill.style.width = "100%";
+      window.setTimeout(() => {
+        loader.classList.add("is-hidden");
+      }, 220);
+    });
+  }
+
+  function waitForMedia(el: HTMLImageElement | HTMLVideoElement): Promise<void> {
+    return new Promise((resolve) => {
+      if (el.tagName === "VIDEO") {
+        const v = el as HTMLVideoElement;
+        if (v.readyState >= 2) return resolve();
+        const done = () => {
+          v.removeEventListener("loadeddata", done);
+          v.removeEventListener("error", done);
+          resolve();
+        };
+        v.addEventListener("loadeddata", done);
+        v.addEventListener("error", done);
+      } else {
+        const img = el as HTMLImageElement;
+        if (img.complete && img.naturalWidth > 0) return resolve();
+        const done = () => {
+          img.removeEventListener("load", done);
+          img.removeEventListener("error", done);
+          resolve();
+        };
+        img.addEventListener("load", done);
+        img.addEventListener("error", done);
+      }
+    });
+  }
+
+  // ---------- Project video modal ----------
+  const modal = document.getElementById("video-modal") as HTMLElement | null;
+  const modalVideo = modal?.querySelector<HTMLVideoElement>(".video-modal-video") ?? null;
+  const modalImage = modal?.querySelector<HTMLImageElement>(".video-modal-image") ?? null;
+  const modalTitle = modal?.querySelector<HTMLElement>(".video-modal-title") ?? null;
+
+  function openMediaModal(src: string, title: string, kind: "video" | "image") {
+    if (!modal) return;
+    modal.dataset.kind = kind;
+    if (modalTitle) modalTitle.textContent = title;
+    if (kind === "video" && modalVideo) {
+      modalVideo.src = src;
+      modalVideo.currentTime = 0;
+      modalVideo.muted = false;
+      modalVideo.play().catch(() => {});
+    } else if (kind === "image" && modalImage) {
+      modalImage.src = src;
+      modalImage.alt = title;
+    }
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeVideoModal() {
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    if (modalVideo) {
+      modalVideo.pause();
+      modalVideo.removeAttribute("src");
+      modalVideo.load();
+    }
+    if (modalImage) {
+      modalImage.removeAttribute("src");
+    }
+    document.body.style.overflow = "";
+  }
+
+  modal?.querySelector(".video-modal-backdrop")?.addEventListener("click", closeVideoModal);
+  modal?.querySelector(".video-modal-close")?.addEventListener("click", closeVideoModal);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal?.classList.contains("is-open")) closeVideoModal();
+  });
+
   function bindProjectVideos() {
-    document.querySelectorAll<HTMLVideoElement>(".proj-video video").forEach((v) => {
-      const parent = v.closest(".proj-item");
-      if (!parent || (parent as HTMLElement).dataset.videoBound === "1") return;
-      (parent as HTMLElement).dataset.videoBound = "1";
-      parent.addEventListener("mouseenter", () => { v.play().catch(() => {}); });
-      parent.addEventListener("mouseleave", () => { v.pause(); v.currentTime = 0; });
+    document.querySelectorAll<HTMLElement>(".proj-video").forEach((btn) => {
+      if (btn.dataset.videoBound === "1") return;
+      btn.dataset.videoBound = "1";
+      btn.addEventListener("click", (e) => {
+        if (btn.classList.contains("is-ready")) {
+          e.preventDefault();
+          const src = btn.dataset.video || "";
+          const title = btn.dataset.title || "";
+          if (src) openMediaModal(src, title, "video");
+        }
+      });
+    });
+  }
+
+  function bindPaperPreviewButtons() {
+    document.querySelectorAll<HTMLElement>(".paper-preview-btn").forEach((btn) => {
+      if (btn.dataset.mediaBound === "1") return;
+      btn.dataset.mediaBound = "1";
+      btn.addEventListener("click", (e) => {
+        if (!btn.classList.contains("is-ready")) return;
+        e.preventDefault();
+        const src = btn.dataset.media || "";
+        const title = btn.dataset.title || "";
+        const kind = (btn.dataset.mediaType === "video" ? "video" : "image") as
+          | "video"
+          | "image";
+        if (src) openMediaModal(src, title, kind);
+      });
     });
   }
 
   function bindPublications() {
-    document.querySelectorAll<HTMLVideoElement>(".paper-preview video").forEach((v) => {
-      const parent = v.closest(".paper-item");
-      if (!parent || (parent as HTMLElement).dataset.videoBound === "1") return;
-      (parent as HTMLElement).dataset.videoBound = "1";
+    document.querySelectorAll<HTMLElement>(".paper-item").forEach((parent) => {
+      const v = parent.querySelector<HTMLVideoElement>(".paper-preview video");
+      if (!v || parent.dataset.videoBound === "1") return;
+      parent.dataset.videoBound = "1";
       parent.addEventListener("mouseenter", () => {
-        v.play().catch(() => {});
+        if (v.readyState >= 2) v.play().catch(() => {});
       });
       parent.addEventListener("mouseleave", () => {
         v.pause();
@@ -709,12 +1089,17 @@ const renderAuthors = (authors: string[]) =>
   // The reader's eye lands on the hero first; nothing below it competes for
   // bandwidth until the 3D avatar is on screen.
   function activateProjectVideos() {
-    document.querySelectorAll<HTMLVideoElement>(".proj-video video[data-src]").forEach((v) => {
+    document.querySelectorAll<HTMLElement>(".proj-video").forEach((container) => {
+      const v = container.querySelector<HTMLVideoElement>("video[data-src]");
+      if (!v) return;
       const src = v.dataset.src;
       if (!src) return;
       v.preload = "metadata";
       v.src = src;
       v.removeAttribute("data-src");
+      driveLoader(container, waitForMedia(v)).then(() => {
+        container.classList.add("is-ready");
+      });
     });
   }
 
@@ -725,6 +1110,12 @@ const renderAuthors = (authors: string[]) =>
       if (el.tagName === "VIDEO") (el as HTMLVideoElement).preload = "metadata";
       el.src = src;
       el.removeAttribute("data-src");
+      const container = el.closest<HTMLElement>(".paper-preview");
+      if (container) {
+        driveLoader(container, waitForMedia(el)).then(() => {
+          container.classList.add("is-ready");
+        });
+      }
     };
     // Load previews progressively as they scroll into view.
     if ("IntersectionObserver" in window) {
@@ -764,10 +1155,12 @@ const renderAuthors = (authors: string[]) =>
 
   bindPublications();
   bindProjectVideos();
+  bindPaperPreviewButtons();
   startStagedLoading();
   document.addEventListener("astro:page-load", () => {
     bindPublications();
     bindProjectVideos();
+    bindPaperPreviewButtons();
     startStagedLoading();
   });
 </script>
