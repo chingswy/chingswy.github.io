@@ -325,12 +325,19 @@ const renderAuthors = (authors: string[]) =>
                           aria-hidden="true"
                         />
                       ) : (
-                        <img data-src={p.preview} alt="" />
+                        <img
+                          src={p.preview}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
                       )}
-                      <span class="media-loader" aria-hidden="true">
-                        <span class="media-loader-track"><span class="media-loader-fill"></span></span>
-                        <span class="media-loader-label">Loading</span>
-                      </span>
+                      {isVideo(p.preview) && (
+                        <span class="media-loader" aria-hidden="true">
+                          <span class="media-loader-track"><span class="media-loader-fill"></span></span>
+                          <span class="media-loader-label">Loading</span>
+                        </span>
+                      )}
                       <span class="paper-preview-cta" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
                           <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7"/>
@@ -982,7 +989,7 @@ const renderAuthors = (authors: string[]) =>
     if (kind === "video" && modalVideo) {
       modalVideo.src = src;
       modalVideo.currentTime = 0;
-      modalVideo.muted = false;
+      modalVideo.muted = true;
       modalVideo.play().catch(() => {});
     } else if (kind === "image" && modalImage) {
       modalImage.src = src;
@@ -1104,35 +1111,49 @@ const renderAuthors = (authors: string[]) =>
   }
 
   function activatePaperPreviews() {
-    const swap = (el: HTMLImageElement | HTMLVideoElement) => {
-      const src = el.dataset.src;
+    // Images use native loading="lazy" — the browser schedules them against
+    // its per-origin connection budget. We only lazy-swap videos here, since
+    // they'd otherwise fight the images and the project previews for the
+    // limited connection slots (Firefox: 6/host).
+    document.querySelectorAll<HTMLImageElement>(".paper-preview img").forEach((img) => {
+      const container = img.closest<HTMLElement>(".paper-preview");
+      if (!container) return;
+      const markReady = () => container.classList.add("is-ready");
+      if (img.complete && img.naturalWidth > 0) {
+        markReady();
+      } else {
+        img.addEventListener("load", markReady, { once: true });
+        img.addEventListener("error", markReady, { once: true });
+      }
+    });
+    const swap = (v: HTMLVideoElement) => {
+      const src = v.dataset.src;
       if (!src) return;
-      if (el.tagName === "VIDEO") (el as HTMLVideoElement).preload = "metadata";
-      el.src = src;
-      el.removeAttribute("data-src");
-      const container = el.closest<HTMLElement>(".paper-preview");
+      v.preload = "metadata";
+      v.src = src;
+      v.removeAttribute("data-src");
+      const container = v.closest<HTMLElement>(".paper-preview");
       if (container) {
-        driveLoader(container, waitForMedia(el)).then(() => {
+        driveLoader(container, waitForMedia(v)).then(() => {
           container.classList.add("is-ready");
         });
       }
     };
-    // Load previews progressively as they scroll into view.
     if ("IntersectionObserver" in window) {
       const io = new IntersectionObserver((entries, obs) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            swap(entry.target as HTMLImageElement | HTMLVideoElement);
+            swap(entry.target as HTMLVideoElement);
             obs.unobserve(entry.target);
           }
         }
       }, { rootMargin: "200px" });
-      document.querySelectorAll<HTMLImageElement | HTMLVideoElement>(
-        ".paper-preview [data-src]",
+      document.querySelectorAll<HTMLVideoElement>(
+        ".paper-preview video[data-src]",
       ).forEach((el) => io.observe(el));
     } else {
-      document.querySelectorAll<HTMLImageElement | HTMLVideoElement>(
-        ".paper-preview [data-src]",
+      document.querySelectorAll<HTMLVideoElement>(
+        ".paper-preview video[data-src]",
       ).forEach(swap);
     }
   }
