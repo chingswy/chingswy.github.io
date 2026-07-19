@@ -952,12 +952,17 @@ const renderAuthors = (authors: string[]) =>
     return new Promise((resolve) => {
       if (el.tagName === "VIDEO") {
         const v = el as HTMLVideoElement;
-        if (v.readyState >= 2) return resolve();
+        // With preload="metadata" we only get loadedmetadata (readyState=1),
+        // never loadeddata (readyState>=2). Waiting on loadeddata leaves the
+        // inline loader spinning forever.
+        if (v.readyState >= 1) return resolve();
         const done = () => {
+          v.removeEventListener("loadedmetadata", done);
           v.removeEventListener("loadeddata", done);
           v.removeEventListener("error", done);
           resolve();
         };
+        v.addEventListener("loadedmetadata", done);
         v.addEventListener("loadeddata", done);
         v.addEventListener("error", done);
       } else {
@@ -985,12 +990,20 @@ const renderAuthors = (authors: string[]) =>
     modal.dataset.kind = kind;
     if (modalTitle) modalTitle.textContent = title;
     if (kind === "video" && modalVideo) {
-      // Pause any inline preview <video> before the modal starts loading — two
-      // media elements pointing at the same URL fight over the download, and
-      // the modal ends up stuck around 0.7s ("Loading" spinner never clears).
+      // Two <video> elements pointing at the same URL will fight over the
+      // download slot — the modal ends up stuck at ~0.7s. Fully release the
+      // inline previews (pause + drop src) so the modal owns the connection.
       document.querySelectorAll<HTMLVideoElement>(
         ".proj-video video, .paper-preview video",
-      ).forEach((v) => v.pause());
+      ).forEach((v) => {
+        v.pause();
+        if (v.src) {
+          v.dataset.releasedSrc = v.src;
+          v.removeAttribute("src");
+          v.load();
+        }
+      });
+      modalVideo.preload = "auto";
       modalVideo.src = src;
       modalVideo.currentTime = 0;
       modalVideo.muted = true;
@@ -1016,6 +1029,16 @@ const renderAuthors = (authors: string[]) =>
     if (modalImage) {
       modalImage.removeAttribute("src");
     }
+    // Restore inline previews we released when opening.
+    document.querySelectorAll<HTMLVideoElement>(
+      ".proj-video video, .paper-preview video",
+    ).forEach((v) => {
+      const stashed = v.dataset.releasedSrc;
+      if (stashed) {
+        v.src = stashed;
+        delete v.dataset.releasedSrc;
+      }
+    });
     document.body.style.overflow = "";
   }
 
@@ -1098,8 +1121,11 @@ const renderAuthors = (authors: string[]) =>
 
   // Staged asset loading: GLB → project videos → paper previews.
   // The reader's eye lands on the hero first; nothing below it competes for
-  // bandwidth until the 3D avatar is on screen.
-  function activateProjectVideos() {
+  // bandwidth until the 3D avatar is on screen. Then project videos run to
+  // completion before paper previews start — otherwise the small images win
+  // the connection race and the videos appear to "come last".
+  function activateProjectVideos(): Promise<void> {
+    const pending: Promise<void>[] = [];
     document.querySelectorAll<HTMLElement>(".proj-video").forEach((container) => {
       const v = container.querySelector<HTMLVideoElement>("video[data-src]");
       if (!v) return;
@@ -1108,10 +1134,17 @@ const renderAuthors = (authors: string[]) =>
       v.preload = "metadata";
       v.src = src;
       v.removeAttribute("data-src");
-      driveLoader(container, waitForMedia(v)).then(() => {
+      const ready = waitForMedia(v);
+      driveLoader(container, ready).then(() => {
         container.classList.add("is-ready");
       });
+      pending.push(ready);
     });
+    // Cap how long we hold paper previews behind stubborn videos.
+    return Promise.race([
+      Promise.all(pending).then(() => {}),
+      new Promise<void>((r) => setTimeout(r, 2500)),
+    ]);
   }
 
   function activatePaperPreviews() {
@@ -1174,10 +1207,7 @@ const renderAuthors = (authors: string[]) =>
     const kick = () => {
       if (started) return;
       started = true;
-      activateProjectVideos();
-      // Small gap so the video metadata requests don't collide with paper
-      // previews arriving via IntersectionObserver.
-      setTimeout(activatePaperPreviews, 150);
+      activateProjectVideos().then(activatePaperPreviews);
     };
     window.addEventListener("viewer3d:ready", kick, { once: true });
     setTimeout(kick, 4000);
