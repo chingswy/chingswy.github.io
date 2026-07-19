@@ -987,6 +987,12 @@ const renderAuthors = (authors: string[]) =>
     modal.dataset.kind = kind;
     if (modalTitle) modalTitle.textContent = title;
     if (kind === "video" && modalVideo) {
+      // Pause any inline preview <video> before the modal starts loading — two
+      // media elements pointing at the same URL fight over the download, and
+      // the modal ends up stuck around 0.7s ("Loading" spinner never clears).
+      document.querySelectorAll<HTMLVideoElement>(
+        ".proj-video video, .paper-preview video",
+      ).forEach((v) => v.pause());
       modalVideo.src = src;
       modalVideo.currentTime = 0;
       modalVideo.muted = true;
