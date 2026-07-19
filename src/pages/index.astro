@@ -326,18 +326,15 @@ const renderAuthors = (authors: string[]) =>
                         />
                       ) : (
                         <img
-                          src={p.preview}
+                          data-src={p.preview}
                           alt=""
-                          loading="lazy"
                           decoding="async"
                         />
                       )}
-                      {isVideo(p.preview) && (
-                        <span class="media-loader" aria-hidden="true">
-                          <span class="media-loader-track"><span class="media-loader-fill"></span></span>
-                          <span class="media-loader-label">Loading</span>
-                        </span>
-                      )}
+                      <span class="media-loader" aria-hidden="true">
+                        <span class="media-loader-track"><span class="media-loader-fill"></span></span>
+                        <span class="media-loader-label">Loading</span>
+                      </span>
                       <span class="paper-preview-cta" aria-hidden="true">
                         <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
                           <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6M14 10l7-7M9 21H3v-6M10 14l-7 7"/>
@@ -708,6 +705,7 @@ const renderAuthors = (authors: string[]) =>
   }
   .paper-preview {
     width: 160px;
+    aspect-ratio: 4 / 3;
     background: color-mix(in oklab, var(--fg-mute) 8%, transparent);
     overflow: hidden;
     border-radius: 2px;
@@ -750,7 +748,7 @@ const renderAuthors = (authors: string[]) =>
   .paper-preview img,
   .paper-preview video {
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: contain;
     display: block;
   }
@@ -1117,22 +1115,22 @@ const renderAuthors = (authors: string[]) =>
   }
 
   function activatePaperPreviews() {
-    // Images use native loading="lazy" — the browser schedules them against
-    // its per-origin connection budget. We only lazy-swap videos here, since
-    // they'd otherwise fight the images and the project previews for the
-    // limited connection slots (Firefox: 6/host).
-    document.querySelectorAll<HTMLImageElement>(".paper-preview img").forEach((img) => {
+    // Both images and videos wait for the 3D avatar to finish. Once activated,
+    // they swap their real src in via IntersectionObserver so the initial
+    // burst of GET requests stays small (Firefox: 6/host).
+    const swapImg = (img: HTMLImageElement) => {
+      const src = img.dataset.src;
+      if (!src) return;
+      img.src = src;
+      img.removeAttribute("data-src");
       const container = img.closest<HTMLElement>(".paper-preview");
-      if (!container) return;
-      const markReady = () => container.classList.add("is-ready");
-      if (img.complete && img.naturalWidth > 0) {
-        markReady();
-      } else {
-        img.addEventListener("load", markReady, { once: true });
-        img.addEventListener("error", markReady, { once: true });
+      if (container) {
+        driveLoader(container, waitForMedia(img)).then(() => {
+          container.classList.add("is-ready");
+        });
       }
-    });
-    const swap = (v: HTMLVideoElement) => {
+    };
+    const swapVideo = (v: HTMLVideoElement) => {
       const src = v.dataset.src;
       if (!src) return;
       v.preload = "metadata";
@@ -1148,19 +1146,24 @@ const renderAuthors = (authors: string[]) =>
     if ("IntersectionObserver" in window) {
       const io = new IntersectionObserver((entries, obs) => {
         for (const entry of entries) {
+          const el = entry.target as HTMLElement;
           if (entry.isIntersecting) {
-            swap(entry.target as HTMLVideoElement);
-            obs.unobserve(entry.target);
+            if (el.tagName === "IMG") swapImg(el as HTMLImageElement);
+            else swapVideo(el as HTMLVideoElement);
+            obs.unobserve(el);
           }
         }
       }, { rootMargin: "200px" });
-      document.querySelectorAll<HTMLVideoElement>(
-        ".paper-preview video[data-src]",
+      document.querySelectorAll<HTMLElement>(
+        ".paper-preview img[data-src], .paper-preview video[data-src]",
       ).forEach((el) => io.observe(el));
     } else {
+      document.querySelectorAll<HTMLImageElement>(
+        ".paper-preview img[data-src]",
+      ).forEach(swapImg);
       document.querySelectorAll<HTMLVideoElement>(
         ".paper-preview video[data-src]",
-      ).forEach(swap);
+      ).forEach(swapVideo);
     }
   }
 
