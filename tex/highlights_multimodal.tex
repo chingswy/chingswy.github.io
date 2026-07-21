@@ -1,0 +1,13 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Project Highlights variant: Multimodal Understanding and Generation.
+% Focus: end-to-end multimodal generative pipelines and understanding.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{rSection}{Project Highlights}
+
+    {\bf Industrial-Scale Motion Generation.} We build end-to-end pipelines covering billion-scale motion-text data curation and cleaning, flow-matching training recipes, and evaluation protocols for generation quality and text alignment. As the main contributor of \href{https://github.com/Tencent-Hunyuan/HY-Motion-1.0}{HY-Motion 1.0}, we brought it from research to product; the model has been open-sourced with 2.5K+ GitHub stars and deployed in Tencent's Hunyuan 3D Studio and Honor of Kings: World, powering 3D creation pipelines and AI NPC gameplay.
+
+    {\bf Controllable Long Video Generation.} We have explored injecting 3D motion signals as a strong prior into video generation. In \href{https://igl-hkust.github.io/CoMoVi/}{CoMoVi}, we build on Wan2.2-I2V-5B to jointly generate 3D human motion and video, yielding outputs with improved temporal consistency and structural plausibility. To enable long video generation of interactive digital humans under multimodal control signals, in \href{https://cangcz.github.io/AnchorCrafter/}{AnchorCrafter} we adopt a sliding-window autoregressive generation strategy at inference time. Previously generated short clips act as in-context conditions, and each step produces a small segment of future frames. Within each local window we apply bidirectional attention, while across blocks we follow a causal inference paradigm, achieving temporally coherent long-sequence video generation.
+
+    {\bf Multimodal Understanding for Real-World Observations.} We have built systems that turn everyday observations into structured multimodal supervision. \href{https://github.com/zju3dv/EasyMocap}{EasyMocap} (4.7K+ GitHub stars) recovers 3D human motion from sparse multi-camera rigs and in-the-wild internet videos, and \href{https://github.com/zju3dv/LoG}{LoG} (770+ GitHub stars) reconstructs photorealistic 3D scenes in real time. Together they turn image, video, and multi-view observations into aligned 3D structure, geometry, and appearance, feeding reliable training data back into multimodal generative models.
+
+\end{rSection}

@@ -166,9 +166,14 @@ import "../styles/global.css";
       const modalOpen = () =>
         !!document.querySelector(".video-modal.is-open");
 
+      // On mobile the deck is disabled (see global.css @media 780px) — pages
+      // stack and body scrolls natively. Keep every hijack below off there.
+      const isMobile = () => window.matchMedia("(max-width: 780px)").matches;
+
       window.addEventListener(
         "wheel",
         (e: WheelEvent) => {
+          if (isMobile()) return;
           if (modalOpen()) return;
           // During a deck animation, kill ALL wheel input so trailing inertia
           // from the trackpad doesn't accidentally scroll the arriving page
@@ -199,6 +204,7 @@ import "../styles/global.css";
 
       // ---------- Keyboard ----------
       window.addEventListener("keydown", (e) => {
+        if (isMobile()) return;
         if (modalOpen()) return;
         if (["ArrowDown", "PageDown", " "].includes(e.key)) {
           if (pageAtEdge(1)) { e.preventDefault(); goTo(current + 1); }
@@ -219,6 +225,7 @@ import "../styles/global.css";
         touchStartAt = Date.now();
       }, { passive: true });
       window.addEventListener("touchend", (e) => {
+        if (isMobile()) return;
         if (modalOpen()) return;
         const dy = e.changedTouches[0].clientY - touchStartY;
         const dt = Date.now() - touchStartAt;
@@ -236,7 +243,12 @@ import "../styles/global.css";
           const idx = pages.findIndex((p) => "#" + p.id === hash);
           if (idx >= 0) {
             e.preventDefault();
-            goTo(idx);
+            if (isMobile()) {
+              pages[idx].scrollIntoView({ behavior: "smooth", block: "start" });
+              history.replaceState(null, "", hash);
+            } else {
+              goTo(idx);
+            }
           }
         });
       });

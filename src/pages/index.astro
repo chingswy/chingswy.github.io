@@ -952,9 +952,9 @@ const renderAuthors = (authors: string[]) =>
     return new Promise((resolve) => {
       if (el.tagName === "VIDEO") {
         const v = el as HTMLVideoElement;
-        // With preload="metadata" we only get loadedmetadata (readyState=1),
-        // never loadeddata (readyState>=2). Waiting on loadeddata leaves the
-        // inline loader spinning forever.
+        // Resolve on loadedmetadata so the loader hides once the first frame
+        // is paintable — with preload="auto" the browser keeps buffering the
+        // rest in the background from there.
         if (v.readyState >= 1) return resolve();
         const done = () => {
           v.removeEventListener("loadedmetadata", done);
@@ -1131,7 +1131,9 @@ const renderAuthors = (authors: string[]) =>
       if (!v) return;
       const src = v.dataset.src;
       if (!src) return;
-      v.preload = "metadata";
+      // "auto" lets the browser keep buffering after the first frame.
+      // "metadata" would stop after headers, leaving the modal to redownload.
+      v.preload = "auto";
       v.src = src;
       v.removeAttribute("data-src");
       const ready = waitForMedia(v);
@@ -1166,7 +1168,7 @@ const renderAuthors = (authors: string[]) =>
     const swapVideo = (v: HTMLVideoElement) => {
       const src = v.dataset.src;
       if (!src) return;
-      v.preload = "metadata";
+      v.preload = "auto";
       v.src = src;
       v.removeAttribute("data-src");
       const container = v.closest<HTMLElement>(".paper-preview");

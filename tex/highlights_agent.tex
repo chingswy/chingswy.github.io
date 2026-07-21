@@ -1,0 +1,13 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Project Highlights variant: Multimodal Agent Systems.
+% Focus: perceive-reason-act agents that inspect, evaluate, and refine generative outputs.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{rSection}{Project Highlights}
+
+    {\bf Perceive-Reason-Act Agent for Generative Evaluation.} Evaluating generative models needs judgment that goes beyond scalar metrics. I built a multimodal agent system that decides what to inspect, invokes the right tools to perceive it, and reasons over the evidence to produce grounded, structured verdicts. Applied to text-to-motion evaluation and 3D asset quality assessment, the agent chooses viewpoints and details to examine, renders and inspects the target accordingly, and returns per-dimension diagnostics with localized evidence for each verdict, giving reviewers auditable results in place of a single scalar score.
+
+    {\bf Closed-Loop Refinement of Generative Pipelines.} I am extending the agent from a passive evaluator to an active controller. The agent's critiques are fed back to the originally open-loop generation pipeline as inference-time guidance, driving iterative refinement and repair of the generated motion or asset. This turns generation into a perceive-reason-act loop: the agent decides which region or dimension to attack next, issues targeted regeneration or edit calls, and re-checks the outcome, so quality improves without retraining the base model.
+
+    {\bf Multimodal Foundations for Agent Perception and Action.} The agent stack rests on strong multimodal foundations that I have built end to end. On the perception side, \href{https://github.com/zju3dv/EasyMocap}{EasyMocap} (4.7K+ GitHub stars) and \href{https://github.com/zju3dv/LoG}{LoG} (770+ GitHub stars) turn real-world video into structured 3D humans and scenes as accessible tooling for downstream agents. On the action side, \href{https://github.com/Tencent-Hunyuan/HY-Motion-1.0}{HY-Motion 1.0} (2.5K+ GitHub stars, deployed in Tencent's Hunyuan 3D Studio and Honor of Kings: World) provides an industrial-scale motion generator that the agent can invoke as a tool, giving it a full perceive-plus-act toolbox tuned for real product use.
+
+\end{rSection}

@@ -216,6 +216,53 @@ h1, h2, h3, h4 {
   .page.scrollable { padding-top: 5rem; }
 }
 
+/* -----------------------------------------------------------------
+   Mobile: abandon the deck. Pages stack, body scrolls natively.
+   The wheel/touch/keyboard hijacks in Base.astro also bail out on this
+   breakpoint so nothing fights the native scroll.
+   ----------------------------------------------------------------- */
+@media (max-width: 780px) {
+  html, body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .deck {
+    position: static;
+    inset: auto;
+  }
+  .page,
+  .page.is-active,
+  .page.is-leaving {
+    position: relative;
+    inset: auto;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    transition: none !important;
+    z-index: auto;
+    min-height: auto;
+    align-items: flex-start;
+    padding: 3.5rem 1.25rem;
+    scroll-margin-top: 1rem;
+  }
+  .page.scrollable {
+    overflow: visible;
+    padding-top: 3.5rem;
+  }
+  .page > .page-inner > *,
+  .page.hero .hero-portrait,
+  .page.hero .hero-copy {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    transition-delay: 0ms !important;
+  }
+  .deck-nav { display: none; }
+  .scroll-hint { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page,
   .page.is-active,

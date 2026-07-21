@@ -9,3 +9,13 @@ dist/
 
 # 本地 npm 镜像配置不入库，CI 走 npmjs.org 官方源
 .npmrc
+
+# LaTeX intermediate artifacts (see tex/auto_compile.sh)
+tex/build/
+tex/*.aux
+tex/*.out
+tex/*.toc
+tex/*.fls
+tex/*.fdb_latexmk
+tex/*.synctex.gz
+tex/*.pdf
